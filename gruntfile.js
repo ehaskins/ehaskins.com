@@ -68,19 +68,21 @@ module.exports = function(grunt) {
 				]
 			}
 		},
-		serve:{
-			options:{
-				port: 3000,
-				path: '/build'
+		connect: {
+			server: {
+				options: {
+					port: 9001,
+					base: 'build'
+				}
 			}
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-serve');
+	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-metalsmith');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
 	// Default task(s).
 	grunt.registerTask('default', ['metalsmith']);
-	grunt.registerTask('dev', ['default', 'watch'])
+	grunt.registerTask('dev', ['default', 'connect', 'watch'])
 };
