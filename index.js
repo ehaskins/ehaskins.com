@@ -1,0 +1,1 @@
+require('./metalsmithBuild.js')();
