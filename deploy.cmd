@@ -92,16 +92,16 @@ echo Handling node.js deployment.
 call :SelectNodeVersion
 
 :: 2. Install npm packages
-IF EXIST "%DEPLOYMENT_TARGET%\package.json" (
-  pushd "%DEPLOYMENT_TARGET%"
+IF EXIST "%DEPLOYMENT_SOURCE%\package.json" (
+  pushd "%DEPLOYMENT_SOURCE%"
   call :ExecuteCmd !NPM_CMD! install
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
 
 :: 3. Install bower packages
-IF EXIST "%DEPLOYMENT_TARGET%\bower.json" (
-  pushd "%DEPLOYMENT_TARGET%"
+IF EXIST "%DEPLOYMENT_SOURCE%\bower.json" (
+  pushd "%DEPLOYMENT_SOURCE%"
   call :ExecuteCmd !NPM_CMD! install bower
   call :ExecuteCmd .\node_modules\.bin\bower install
   IF !ERRORLEVEL! NEQ 0 goto error
@@ -109,8 +109,8 @@ IF EXIST "%DEPLOYMENT_TARGET%\bower.json" (
 )
 
 :: 3. Run grunt
-IF EXIST "%DEPLOYMENT_TARGET%\gruntfile.js" (
-  pushd "%DEPLOYMENT_TARGET%"
+IF EXIST "%DEPLOYMENT_SOURCE%\gruntfile.js" (
+  pushd "%DEPLOYMENT_SOURCE%"
   call :ExecuteCmd !NPM_CMD! install grunt-cli
   call :ExecuteCmd .\node_modules\.bin\grunt --no-color
   IF !ERRORLEVEL! NEQ 0 goto error
