@@ -22,9 +22,20 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
+		clean: ['build'],
+		bower: {
+            install: {
+                options: {
+                    targetDir: "build/lib",
+                    layout: "byComponent",
+                    cleanTargetDir: false
+                }
+            }
+        },
 		metalsmith: {
 			staticSiteExample: {
 				options: {
+					clean: false,
 					metadata: {
 						title: 'My Blog',
 						description: 'My second, super-cool blog.'
@@ -66,6 +77,14 @@ module.exports = function(grunt) {
 				tasks:[
 					'metalsmith'
 				]
+			},
+			bower:{
+				files:[
+					'bower.json'
+				],
+				tasks:[
+					'bower'
+				]
 			}
 		},
 		connect: {
@@ -80,11 +99,13 @@ module.exports = function(grunt) {
 		}
 	});
 
+	grunt.loadNpmTasks('grunt-bower-task');
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-metalsmith');
 	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 
 	// Default task(s).
-	grunt.registerTask('default', ['metalsmith']);
+	grunt.registerTask('default', ['clean', 'bower', 'metalsmith']);
 	grunt.registerTask('dev', ['default', 'connect', 'watch'])
 };
