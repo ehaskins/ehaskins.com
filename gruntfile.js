@@ -22,7 +22,7 @@ module.exports = function(grunt) {
 
 	// Project configuration.
 	grunt.initConfig({
-		clean: ['build'],
+		clean: ['dist'],
 		bower: {
             install: {
                 options: {
@@ -65,7 +65,7 @@ module.exports = function(grunt) {
 					}
 				},
 				src: 'src',
-				dest: 'build'
+				dest: 'dist'
 			}
 		},
 		watch:{
