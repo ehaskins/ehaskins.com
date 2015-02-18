@@ -1,4 +1,4 @@
-module.exports = function(){
+module.exports = function(done){
 	var Metalsmith  = require('metalsmith'),
 		markdown    = require('metalsmith-markdown'),
 		templates   = require('metalsmith-templates'),
@@ -10,6 +10,7 @@ module.exports = function(){
 		    var pattern = new RegExp(config.pattern);
 
 		    return function(files, metalsmith, done) {
+
 		        for (var file in files) {
 		            if (pattern.test(file)) {
 		                var _f = files[file];
@@ -26,9 +27,9 @@ module.exports = function(){
 	Handlebars.registerPartial('footer', fs.readFileSync(__dirname + '/templates/partials/footer.hbt').toString());
 	Handlebars.registerPartial('nav', fs.readFileSync(__dirname + '/templates/partials/nav.hbt').toString());
 
-	Metalsmith(__dirname)
-		.source('src')
-		.clean(false)
+	var metalsmith = new Metalsmith(__dirname);
+	
+	metalsmith.clean(false)
 		.use(collections({
 			pages: {
 				pattern: 'pages/*.md'
@@ -45,8 +46,10 @@ module.exports = function(){
 		}))
 		.use(permalinks('posts/:title'))
 		.use(templates('handlebars'))
-		.destination('build')
+		.destination('dist')
 		.build(function(err) {
-			if (err) throw err;
+			if (err) done(err);
+			console.log('Built files in ' + metalsmith.source() + ' to ' + metalsmith.destination());
+			done();
 		});
 };

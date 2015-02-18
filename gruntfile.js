@@ -56,12 +56,15 @@ module.exports = function(grunt) {
 	grunt.registerTask('dev', ['default', 'connect', 'watch'])
 
 	grunt.registerMultiTask('buildMetalsmith', 'Runs metalsmith', function() {		
-		var metalsmithBuild = require('./metalsmithBuild.js');
+		var done = this.async(),
+			metalsmithBuild;
+
 		try{
-			metalsmithBuild();
+			metalsmithBuild = require('./metalsmithBuild.js');
+			metalsmithBuild(done);
 		}
 		catch (err){
-			grunt.warn(err);
+			done(err);
 		}
 	});
 };
