@@ -44,6 +44,7 @@ module.exports = function(done){
 			pattern: 'posts',
 			templateName: 'post.hbt'
 		}))
+		.use(markdown())
 		.use(permalinks('posts/:title'))
 		.use(templates('handlebars'))
 		.destination('dist')

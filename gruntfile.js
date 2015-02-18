@@ -23,7 +23,7 @@ module.exports = function(grunt) {
 					'templates/**/*'
 				],
 				tasks:[
-					'metalsmith'
+					'buildMetalsmith'
 				]
 			},
 			bower:{

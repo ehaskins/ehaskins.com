@@ -1,6 +1,7 @@
-            </div> {{!-- END .main-wrapper --}}
-        <footer>
-            Metalsmith test site
-        </footer>
-    </body>
+      </div>
+      <footer>
+      	Copyright Eric Haskins 2015
+      </footer>
+    </div>
+  </body>
 </html>

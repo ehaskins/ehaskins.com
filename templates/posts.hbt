@@ -1,6 +1,5 @@
 {{> header}}
 <h2>{{title}}</h2>
-
 <article>
     <ul>
         {{#each collections.posts}}
@@ -11,5 +10,4 @@
         {{/each}}
     </ul>
 </article>
-
 {{> footer}}
