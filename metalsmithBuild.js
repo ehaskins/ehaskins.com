@@ -26,10 +26,14 @@ module.exports = function(done){
 	Handlebars.registerPartial('header', fs.readFileSync(__dirname + '/templates/partials/header.hbt').toString());
 	Handlebars.registerPartial('footer', fs.readFileSync(__dirname + '/templates/partials/footer.hbt').toString());
 	Handlebars.registerPartial('nav', fs.readFileSync(__dirname + '/templates/partials/nav.hbt').toString());
+	Handlebars.registerHelper('link', function(path) {
+	    return '/' + path;
+	});
 
 	var metalsmith = new Metalsmith(__dirname);
 	
-	metalsmith.clean(false)
+	metalsmith
+		.clean(false)
 		.use(collections({
 			pages: {
 				pattern: 'pages/*.md'
@@ -40,12 +44,21 @@ module.exports = function(done){
 				reverse: true
 			}
 		}))
+		.use(markdown())
 		.use(findTemplate({
 			pattern: 'posts',
 			templateName: 'post.hbt'
 		}))
-		.use(markdown())
 		.use(permalinks('posts/:title'))
+		.use(function(files, metalsmith, done){
+			files['posts/index.html'] = {
+				title: 'Archive',
+				mode: '0666',
+				contents: new Buffer(''),
+				template: 'posts.hbt'
+			};
+			done();
+		})
 		.use(templates('handlebars'))
 		.destination('dist')
 		.build(function(err) {
