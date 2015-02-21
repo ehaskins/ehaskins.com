@@ -1,6 +1,7 @@
 {
   "name": "ehaskins.com",
   "version": "1.0.0",
+  "engines": "0.12.0",
   "description": "A blog of things",
   "devDependencies": {
     "grunt": "^0.4.5",
