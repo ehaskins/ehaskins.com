@@ -1,8 +1,5 @@
-{{> _header}}
 <h2>{{title}}</h2>
 
 <article>
     {{{contents}}}
 </article>
-
-{{> _footer}}

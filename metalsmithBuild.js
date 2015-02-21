@@ -4,6 +4,7 @@ module.exports = function(done){
 		templates   = require('metalsmith-templates'),
 		collections = require('metalsmith-collections'),
 		permalinks  = require('metalsmith-permalinks'),
+		excerpts	= require('metalsmith-excerpts'),
 		Handlebars  = require('handlebars'),
 		fs          = require('fs');
 		findTemplate = function(config) {
@@ -23,9 +24,22 @@ module.exports = function(done){
 		    };
 		};
 
-	Handlebars.registerPartial('header', fs.readFileSync(__dirname + '/templates/partials/header.hbt').toString());
-	Handlebars.registerPartial('footer', fs.readFileSync(__dirname + '/templates/partials/footer.hbt').toString());
-	Handlebars.registerPartial('nav', fs.readFileSync(__dirname + '/templates/partials/nav.hbt').toString());
+	function registerPartials(partials){
+		var p;
+		for (i = 0; i < partials.length; i++){
+			p = partials[i];
+			Handlebars.registerPartial(p, fs.readFileSync('./templates/' + p + '.hbt').toString());
+		}
+	}
+
+	registerPartials([
+		'_header',
+		'_footer',
+		'_nav',
+		'_post'
+		]);
+
+
 	Handlebars.registerHelper('link', function(path) {
 	    return '/' + path;
 	});
@@ -45,6 +59,7 @@ module.exports = function(done){
 			}
 		}))
 		.use(markdown())
+		.use(excerpts())
 		.use(findTemplate({
 			pattern: 'posts',
 			templateName: 'post.hbt'
@@ -53,7 +68,6 @@ module.exports = function(done){
 		.use(function(files, metalsmith, done){
 			files['posts/index.html'] = {
 				title: 'Archive',
-				mode: '0666',
 				contents: new Buffer(''),
 				template: 'posts.hbt'
 			};

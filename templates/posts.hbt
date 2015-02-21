@@ -1,10 +1,13 @@
-{{> header}}
+{{> _header}}
 <h2>{{title}}</h2>
-<ul>
+<div>
     {{#each collections.posts}}
-        <li>
-            <a href="{{link this.path}}"><h3>{{this.title}}</h3></a>
-        </li>
+        <div>
+  			<h3><a href="{{link this.path}}">{{this.title}}</a></h3>
+			<div>
+				{{{this.excerpt}}}
+			</div>
+        </div>
     {{/each}}
-</ul>
-{{> footer}}
+</div>
+{{> _footer}}
