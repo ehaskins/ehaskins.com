@@ -28,3 +28,12 @@ nav {
     line-height: 6.5rem;
     color: #222;
 }
+
+li {
+    margin-bottom: 0;
+}
+
+ul ul, ul ol, ol ol, ol ul {
+    margin-top: 0;
+    margin-bottom: 0;
+} 

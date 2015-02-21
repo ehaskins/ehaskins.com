@@ -4,9 +4,9 @@
     {{#each collections.posts}}
         <div>
   			<h3><a href="{{link this.path}}">{{this.title}}</a></h3>
-			<div>
+			<excerpt>
 				{{{this.excerpt}}}
-			</div>
+			</excerpt>
         </div>
     {{/each}}
 </div>
