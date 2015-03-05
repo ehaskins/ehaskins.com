@@ -99,19 +99,9 @@ IF EXIST "%DEPLOYMENT_SOURCE%\package.json" (
   popd
 )
 
-:: 3. Install bower packages
-IF EXIST "%DEPLOYMENT_SOURCE%\bower.json" (
-  pushd "%DEPLOYMENT_SOURCE%"
-  call :ExecuteCmd !NPM_CMD! install bower
-  call :ExecuteCmd .\node_modules\.bin\bower install
-  IF !ERRORLEVEL! NEQ 0 goto error
-  popd
-)
-
 :: 3. Run grunt
 IF EXIST "%DEPLOYMENT_SOURCE%\gruntfile.js" (
   pushd "%DEPLOYMENT_SOURCE%"
-  call :ExecuteCmd !NPM_CMD! install grunt-cli
   call :ExecuteCmd "!NODE_EXE!" .\node_modules\grunt-cli\bin\grunt --no-color
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
