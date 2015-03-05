@@ -1,14 +1,15 @@
 ---
-title: A New Project - ListenCat.io
-date: 2015-02-12
+title: ListenCat - A New Project
+date: 2015-02-12 00:00:00-6
+author: Eric Haskins
 ---
 ### What is ListenCat.io? ###
 TL;DR version, it's a podcast client for Windows 8, Windows Phone 8.1 and web. I'm starting to build it. It'll be awesome.
 
 ### Do we need another podcast client? ###
-We probably don't, but I can't find anything I'm happy with. 
+We probably don't, but I can't find anything I'm happy with.
 
-A quick look at the Windows store, and there doesn't appear to be a single podcast client with more than a 2 star rating. Windows Phone isn't much better. There's the "Podcasts" app by Microsoft, but not much else. 
+A quick look at the Windows store, and there doesn't appear to be a single podcast client with more than a 2 star rating. Windows Phone isn't much better. There's the "Podcasts" app by Microsoft, but not much else.
 
 I've been using the Microsoft Podcasts app for a while and I have a few issues with it.
 
