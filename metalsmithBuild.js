@@ -1,15 +1,17 @@
 (function(){
 	'use strict';
 
-	module.exports = function(done){
+	module.exports = function(includeDrafts, done){
 		var Metalsmith  = require('metalsmith'),
 			markdown    = require('metalsmith-markdown'),
 			templates   = require('metalsmith-templates'),
 			collections = require('metalsmith-collections'),
 			permalinks  = require('metalsmith-permalinks'),
-			excerpts	= require('metalsmith-excerpts'),
+			excerpts		= require('metalsmith-excerpts'),
+			drafts			= require('metalsmith-drafts'),
 			Handlebars  = require('handlebars'),
 			fs          = require('fs'),
+    		moment      = require('moment'),
 			findTemplate = function(config) {
 			    var pattern = new RegExp(config.pattern);
 
@@ -43,13 +45,43 @@
 			'_post'
 			]);
 
+		Handlebars.registerHelper('xmldate', function(date) {
+		    return moment(date).format('ddd, DD MMM YYYY HH:mm:ss ZZ');
+		});
+
+		Handlebars.registerHelper('sitemapdate', function(date) {
+		    return moment(date).format('YYYY-MM-DD');
+		});
+
+		Handlebars.registerHelper('date', function(date) {
+		    return moment(date).format('MMMM Do, YYYY');
+		});
+
+		Handlebars.registerHelper('postInfo', function() {
+			var out = "";
+			if (this.date){
+				out += moment(this.date).format('MMMM Do, YYYY');
+			} else {
+				out += "sometime"
+			}
+
+			if (this.author){
+				out += " by " + this.author;
+			} else {
+				out += " by someone"
+			}
+		    return out;
+		});
 
 		Handlebars.registerHelper('link', function(path) {
 		    return '/' + path;
 		});
-		
+
 		var metalsmith = new Metalsmith(__dirname);
-		
+		if (!includeDrafts){
+			metalsmith
+				.use(drafts);
+		}
 		metalsmith
 			.source('src')
 			.clean(false)
@@ -88,7 +120,7 @@
 			.use(templates('handlebars'))
 			.destination('dist')
 			.build(function(err) {
-				if (err) 
+				if (err)
 					done(err);
 				console.log('Built files in ' + metalsmith.source() + ' to ' + metalsmith.destination());
 				done();

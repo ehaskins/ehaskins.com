@@ -1,1 +1,1 @@
-require('./metalsmithBuild.js')(function(){});
+require('./metalsmithBuild.js')(true, function(){});
