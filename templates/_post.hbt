@@ -1,5 +1,9 @@
-<h2>{{title}}</h2>
-
-<article>
-    {{{original}}}
-</article>
+<div class="post">
+	<div class="post-header">
+		<div class="post-title">{{title}}</div>
+		<div class="post-metadata">{{postInfo}}</div>
+	</div>    
+    <div class="post-content">
+		{{{original}}}
+    </div>
+</div>

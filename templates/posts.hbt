@@ -2,11 +2,14 @@
 <h2>{{title}}</h2>
 <div>
     {{#each collections.posts}}
-        <div>
-  			<h3><a href="{{link this.path}}">{{this.title}}</a></h3>
-			<excerpt>
+        <div class="post">
+			<div class="post-header">
+				<div class="post-title"><a href="{{link this.path}}">{{title}}</a></div>
+				<div class="post-metadata">{{postInfo}}</div>
+			</div>    
+			<div class="post-excerpt">
 				{{{this.excerpt}}}
-			</excerpt>
+			</div>
         </div>
     {{/each}}
 </div>

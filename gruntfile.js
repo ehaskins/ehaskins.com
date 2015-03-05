@@ -70,7 +70,7 @@ module.exports = function (grunt) {
     grunt.registerTask('prep', ['clean', 'bower']);
     grunt.registerTask('default', ['prep', 'buildMetalsmith:release']);
     grunt.registerTask('dev', ['prep', 'buildMetalsmith:debug', 'connect', 'watch']);
-    grunt.registerTask('serve', ['prep', 'buildMetalsmith:release', 'connect', 'watch']);
+    grunt.registerTask('serve', ['prep', 'buildMetalsmith:release', 'connect:server:keepalive']);
 
     grunt.registerMultiTask('buildMetalsmith', 'Runs metalsmith', function () {
         var done = this.async(),

@@ -1,7 +1,7 @@
       </div>
-      <footer>
-      	Copyright Eric Haskins 2015
-      </footer>
+      <div class="footer">
+      	Copyright &copy; Eric Haskins 2015.
+      </div>
     </div>
   </body>
 </html>

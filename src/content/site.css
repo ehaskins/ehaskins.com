@@ -8,7 +8,19 @@ nav {
     border-bottom: 1px solid #eee;
 }
 
+a {
+    color: #4466c5;
+    text-decoration: none;
+}
 
+a:hover{
+    color: #4466c5;
+    text-decoration: underline;
+}
+
+body {
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
 .nav-list {
 	list-style: none;
 }
@@ -21,7 +33,6 @@ nav {
 .nav-list a {
     text-transform: uppercase;
     font-size: 11px;
-    font-weight: 600;
     letter-spacing: 0.2rem;
     margin-right: 35px;
     text-decoration: none;
@@ -37,3 +48,31 @@ ul ul, ul ol, ol ol, ol ul {
     margin-top: 0;
     margin-bottom: 0;
 } 
+
+.post {
+
+}
+
+.post .post-title {
+    font-weight: 200;
+    font-size: 3.0rem; 
+    line-height: 1.25; 
+    letter-spacing: -.1rem;
+}
+
+.post .post-metadata {
+    opacity: 0.4;
+}
+
+.footer {
+    border-top: 1px solid black;
+    opacity: 0.25;
+}
+
+blockquote{
+    margin: 0;
+    padding: 0 15px;
+    color: #777;
+    border-left: 3px solid #ddd;
+}
+

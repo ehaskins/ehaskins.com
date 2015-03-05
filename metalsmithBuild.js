@@ -80,7 +80,7 @@
 		var metalsmith = new Metalsmith(__dirname);
 		if (!includeDrafts){
 			metalsmith
-				.use(drafts);
+				.use(drafts());
 		}
 		metalsmith
 			.source('src')
