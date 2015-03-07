@@ -12,6 +12,11 @@
 			Handlebars  = require('handlebars'),
 			fs          = require('fs'),
     		moment      = require('moment'),
+    		metadata	= {
+				sitename: "Eric Haskins",
+				description: "A blog of things and stuff",
+				baseUrl: "http://ehaskins.com/"
+			},
 			findTemplate = function(config) {
 			    var pattern = new RegExp(config.pattern);
 
@@ -76,6 +81,10 @@
 		Handlebars.registerHelper('link', function(path) {
 		    return '/' + path;
 		});
+		
+		Handlebars.registerHelper('abslink', function(path) {
+		    return metadata.baseUrl + path;
+		});
 
 		var metalsmith = new Metalsmith(__dirname);
 		if (!includeDrafts){
@@ -85,6 +94,7 @@
 		metalsmith
 			.source('src')
 			.clean(false)
+			.metadata(metadata)
 			.use(collections({
 				pages: {
 					pattern: 'pages/*.md'
