@@ -15,7 +15,8 @@
     		metadata	= {
 				sitename: "Eric Haskins",
 				description: "A blog of things and stuff",
-				baseUrl: "http://ehaskins.com/"
+				baseUrl: "http://ehaskins.com/",
+				feedUrl: "http://ehaskins.com/feed.xml"
 			},
 			findTemplate = function(config) {
 			    var pattern = new RegExp(config.pattern);

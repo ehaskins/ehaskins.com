@@ -8,6 +8,7 @@
     <link href="/lib/skeleton/skeleton.css" rel="stylesheet" />
     <link href="/lib/clear-sans/css/clear-sans.css" rel="stylesheet" />
     <link href="/content/site.css" rel="stylesheet" />
+    <link rel="alternate" type="application/rss+xml" title="{{ sitename }}" href="{{ feedUrl }}">
   </head>
   <body>
     <div class="container">
