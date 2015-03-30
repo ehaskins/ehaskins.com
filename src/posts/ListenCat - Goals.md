@@ -25,5 +25,5 @@ I figure it's better to work off of goals instead of saying don't have problem X
 	- I should never have to select the next thing to play. Something should always be queued.
 	- The next few episodes in my queue should be available instantly and without streaming on every device I use.
 
-###What's next###
+# What's next
 My next post will be looking at the feature set of a minimally viable product, probably followed by one on technical decisions and architecture.

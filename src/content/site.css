@@ -1,7 +1,43 @@
+/* Base Styles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+html {
+    font-size: 100%;
+}
+body {
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+
+/* Typography
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+h1, h2, h3, h4, h5, h6 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-weight: 300;
+}
+
+h1 { font-size: 2.0rem; }
+h2 { font-size: 1.5rem; }
+h3 { font-size: 1.17rem; }
+h4 { font-size: 1.12rem; }
+h5 { font-size: 0.83rem; }
+h6 { font-size: 0.75rem; }
+
+p {
+    margin-top: 0;
+}
+pre, blockquote, dl, figure, table, p, ul, ol, form {
+    margin-bottom: 1.25rem;
+}
+
+/* Navigation
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
 nav {
     display: block;
     width: 100%;
-    height: 6.5rem;
+    height: 4rem;
     background: #fff;
     z-index: 99;
     margin-top: 0px;
@@ -18,9 +54,7 @@ a:hover{
     text-decoration: underline;
 }
 
-body {
-    font-family: "Open Sans", Helvetica, Arial, sans-serif;
-}
+
 .nav-list {
 	list-style: none;
 }
@@ -36,7 +70,7 @@ body {
     letter-spacing: 0.2rem;
     margin-right: 35px;
     text-decoration: none;
-    line-height: 6.5rem;
+    line-height: 4rem;
     color: #222;
 }
 
@@ -47,7 +81,7 @@ li {
 ul ul, ul ol, ol ol, ol ul {
     margin-top: 0;
     margin-bottom: 0;
-} 
+}
 
 .post {
 
@@ -55,13 +89,17 @@ ul ul, ul ol, ol ol, ol ul {
 
 .post .post-title {
     font-weight: 200;
-    font-size: 3.0rem; 
-    line-height: 1.25; 
+    font-size: 2.5rem;
+    line-height: 1.25;
     letter-spacing: -.1rem;
 }
 
 .post .post-metadata {
-    opacity: 0.4;
+    color: #AAA;
+}
+
+.post .post-header{
+    margin-bottom: 1.5rem;
 }
 
 .footer {
@@ -75,4 +113,3 @@ blockquote{
     color: #777;
     border-left: 3px solid #ddd;
 }
-
