@@ -2,6 +2,7 @@
 title: Docker in Hyper-V on Windows 10
 date: 2015-07-27
 author: Eric Haskins
+draft: true
 tags:
 	- Docker
 	- Windows
@@ -9,12 +10,12 @@ tags:
 	- Note to self
 ---
 
-These are my notes for setting up docker on Windows 10 10162. Don't take them
+These are my notes for setting up docker on Windows 10 10240. Don't take them
 as any more.
 
 I run all of this from a Git Shell PowerShell intance since that'll have SSH 
 and git available. The only exception is the actual creation command, which has
-to be run from an Administrative isntance.
+to be run from an Administrative instance.
 
 # Prep
 - Install Hyper-V
