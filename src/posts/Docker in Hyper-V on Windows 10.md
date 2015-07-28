@@ -13,7 +13,7 @@ tags:
 These are my notes for setting up docker on Windows 10 10240. Don't take them
 as any more.
 
-I run all of this from a Git Shell PowerShell intance since that'll have SSH 
+I run all of this from a Git Shell PowerShell instance since that'll have SSH 
 and git available. The only exception is the actual creation command, which has
 to be run from an Administrative instance.
 
