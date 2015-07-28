@@ -2,12 +2,12 @@
 title: Docker in Hyper-V on Windows 10
 date: 2015-07-27
 author: Eric Haskins
-draft: true
+draft: false
 tags:
-	- Docker
-	- Windows
-	- Powershell
-	- Note to self
+- Docker
+- Windows
+- Powershell
+- Note to self
 ---
 
 These are my notes for setting up docker on Windows 10 10240. Don't take them
