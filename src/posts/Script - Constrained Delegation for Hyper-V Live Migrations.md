@@ -1,4 +1,4 @@
-```
+---
 title: Script - Constrained Delegation for Hyper-V Live Migrations
 author: Eric Haskins
 date: 2015-09-02
@@ -7,7 +7,8 @@ tags:
   - Script
   - Hyper-V
   - Active Directory
-```
+draft: false
+---
 # Background
 There are two options for Live Migration security in Hyper-V.
 1. Credential Security Support Provider (CredSSP)
