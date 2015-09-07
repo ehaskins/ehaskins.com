@@ -3,8 +3,8 @@ title: Script - Constrained Delegation for Hyper-V Live Migrations
 author: Eric Haskins
 date: 2015-09-02
 tags:
-  - PowerShell
   - Script
+  - PowerShell
   - Hyper-V
   - Active Directory
 draft: false
