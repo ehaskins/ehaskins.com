@@ -1,5 +1,5 @@
 ---
-title: Script - Save a GPOReport for every GPO in a Domain using PowerShell
+title: Script - Save a GPOReport for Every GPO in a Domain Using PowerShell
 author: Eric Haskins
 date: 2015-09-07
 tags:
