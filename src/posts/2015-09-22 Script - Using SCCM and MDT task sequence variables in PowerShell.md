@@ -3,9 +3,9 @@ title: Script - Using SCCM and MDT task sequence variables in PowerShell
 date: 2015-09-22
 author: Eric Haskins
 tags: 
-	- PowerShell
-	- SCCM
-	- MDT
+  - PowerShell
+  - SCCM
+  - MDT
 ---
 
 # Just the code
