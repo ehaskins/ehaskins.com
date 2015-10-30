@@ -3,8 +3,8 @@ title: Hololens First Impressions
 date: 2015-10-28
 author: Eric Haskins
 tags: 
-  - Hololens
-  - Reviews
+    - Reviews
+    - Hololens
 ---
 
 # What happened
@@ -16,9 +16,7 @@ It started with a brief "orientation" where they showed a video how to wear the 
 ## Project X-Ray
 I got to play the project X-Ray game shown a few weeks ago at the Windows Devices event. Unfortunately my experiance didn't include the controller used in the on stage demo, or the awesome sword arm. Take a look at this video so you know what I'm talking about.
 
-<isframe width="560" height="315" src="https://www.youtube.com/embed/C3rNIxMlKmI?start=216" frameborder="0" allowfullscreen></iframe>
-
-The room I was taken to was about 10 feet square. 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/C3rNIxMlKmI?start=216" frameborder="0" allowfullscreen></iframe>
 
 # Issues
 Let's start with a disclaimer. They said the device I used was a prototype, and lots of things could change.
