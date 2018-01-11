@@ -1,3 +1,0 @@
-{{> _header}}
-{{> _post collections.posts.[0]}}
-{{> _footer}}

@@ -1,7 +1,0 @@
-{{> _header}}
-<h2>{{title}}</h2>
-
-<article>
-    {{{original}}}
-</article>
-{{> _footer}}
