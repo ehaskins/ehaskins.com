@@ -22,3 +22,15 @@ In addition to actually writing some new content, there are a few things I'd lik
 I figured step one was to see if two year old Metalsmith build process would still run. Honestly, I didn't expect it to, but ignoring the multitude of deprecated package it still worked.
 
 I never really finished
+
+# Migrating
+
+Moving posts to folder per folder structure
+
+```
+dir | % {
+>> $folder = $_.BaseName
+>> mkdir $folder;
+>> move $_.Name (Join-Path $folder index.md)
+>> }
+```
