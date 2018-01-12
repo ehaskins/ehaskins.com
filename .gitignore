@@ -5,3 +5,6 @@ public
 .intermediate-representation/
 .cache/
 yarn.lock
+yarn-error.log
+
+artifacts/
