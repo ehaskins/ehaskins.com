@@ -111,13 +111,16 @@ IF EXIST "%DEPLOYMENT_SOURCE%\src\package.json" (
   popd
 )
 
-:: 4. Build gatsby
+:: 4. Remove old gatsby output
+RMDIR /S /Q "%DEPLOYMENT_SOURCE%\src\public"
+
+:: 5. Build gatsby
 pushd "%DEPLOYMENT_SOURCE%\src"
 call :ExecuteCmd yarn run build
 IF !ERRORLEVEL! NEQ 0 goto error
 popd
 
-:: 4. KuduSync
+:: 6. KuduSync
 call :ExecuteCmd "%KUDU_SYNC_CMD%" -v 50 -f "%DEPLOYMENT_SOURCE%\src\public" -t "%DEPLOYMENT_TARGET%" -n "%NEXT_MANIFEST_PATH%" -p "%PREVIOUS_MANIFEST_PATH%" -i ".git;.hg;.deployment;deploy.cmd"
 IF !ERRORLEVEL! NEQ 0 goto error
 
