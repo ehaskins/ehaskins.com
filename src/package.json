@@ -1,6 +1,9 @@
 {
   "name": "eric-haskins-blog",
   "author": "Eric Haskins <eric@ehaskins.com>",
+  "engines": {
+    "node": "8.x.x || 9.x.x"
+  },
   "dependencies": {
     "gatsby": "^1.9.146",
     "gatsby-link": "^1.6.32",
