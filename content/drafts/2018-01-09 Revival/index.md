@@ -8,6 +8,17 @@ tags:
 
 I decided it's time to try to blog again. I'm planning to some longer form content, and I want a place to post random things I fight with.
 
+# Goals
+
+* Seperate area for long-lived articles
+* Blog w/ rss
+* SiteMap
+* Support for additional code / visualization in articles
+* Build visualizations as part of main webpack build
+* Dynamically load additional code to keep bundle size down
+* SSR text content w/placeholders for visualizations
+* Adding/changing article or article code should not change hash/name of core bundle
+
 # The Project
 
 In addition to actually writing some new content, there are a few things I'd like to do the make this site respectable.
