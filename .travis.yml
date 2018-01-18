@@ -1,0 +1,21 @@
+language: node_js
+
+os:
+  - linux
+
+node_js:
+  - "node"
+
+script:
+  - cd src/
+  - yarn
+  - npm run build
+
+deploy:
+  local-dir: public
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+  keep-history: true
+  on:
+    branch: master
