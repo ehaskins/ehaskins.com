@@ -190,35 +190,32 @@ On a Z80, at least, the DAA instruction sets a couple of flags based on the fina
 | Carry (C) | Output > 0x99 |
 | Zero (Z)  | Output == 0   |
 
+# Some Code...
+
+Turns out there's a lot of poorly documented edge cases in `daa`. This is the code I ended up with, which works.
+
 ```typescript
-function DAA(value: number, subtraction: bool, carry: bool, halfCarry: bool) {
+function DAA(value: number, subtraction: bool, carry: bool, halfCarry: bool){
   let correction = 0;
 
-  // Split apart each 4 bit digit
-  let lowerNibble = value & 0x0f;
-  let upperNibble = value & 0xf0;
-
-  if (lowerNibble > 0x09 || halfCarry) {
-    correction += 0x06;
+  let setFlagC = 0;
+  if (flagH || (!flagN && (value & 0xf) > 9)) {
+    correction |= 0x6;
   }
 
-  if (upperNibble > 0x90 || carry) {
-    correction += 0x60;
+  if (flagC || (!flagN && value > 0x99)) {
+    correction |= 0x60;
+    setFlagC = FLAG_C;
   }
 
-  // If subtracting, negate the correction
-  if (subtraction) {
-    correction = -correction;
-  }
+  value += flagN ? -correction : correction;
 
-  // Calculate flag values, and cleanup from overflows
-  let output = value + correction;
-  let carry = output > 0x99;
+  value &= 0xff;
 
-  // Mask off any bits above the 8th bit.
-  output = output & 0xff;
+  const setFlagZ = value === 0 ? FLAG_Z : 0;
 
-  let zero = output === 0;
+  regF &= ~(FLAG_H | FLAG_Z | FLAG_C);
+  regF |= setFlagC | setFlagZ;
 
   return { output, carry, zero };
 ```
