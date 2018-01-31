@@ -15,7 +15,7 @@ deploy:
   local-dir: public
   provider: pages
   skip-cleanup: true
-  github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard, marked secure
+  github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard
   keep-history: true
   fqdn: ehaskins.com
   on:
