@@ -10,12 +10,15 @@ script:
   - cd src/
   - yarn
   - npm run build
+  - cd ..
+  - mkdir output
+  - cp src/public output/blog
 
 deploy:
-  local-dir: src/public
+  local-dir: output
   provider: pages
   skip-cleanup: true
-  github-token: $GITHUB_TOKEN  # Set in travis-ci.org dashboard
+  github-token: $GITHUB_TOKEN
   keep-history: true
   fqdn: ehaskins.com
   on:
