@@ -32,6 +32,7 @@ IoT is about recognizing
 
 * Controls
 * Sensors
+* Supply Chain
 
 # Why Industrial IoT
 

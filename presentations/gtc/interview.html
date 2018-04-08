@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js</title>
+
+	<link rel="stylesheet" href="../reveal/css/reveal.css">
+	<link rel="stylesheet" href="../reveal/css/theme/white.css">
+	<link rel="stylesheet" href="style.css">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h1>Industrial IoT</h1>
+			</section>
+			<section>
+				<ol>
+					<h2>Overview</h2>
+					<li class="fragment">Trends driving IoT</li>
+					<li class="fragment">Compare examples of consumer and industrial IoT</li>
+					<li class="fragment">Promise of IoT</li>
+					<li class="fragment">What does it mean for IT pros?</li>
+				</ol>
+			</section>
+			<section>
+				<h2>Trends Driving IoT</h2>
+				<ol>
+					<li class="fragment">IP networks are ubiquitous</li>
+					<li class="fragment">Cost of IP connected devices is falling</li>
+					<li class="fragment">Network perimeter is disapearing</li>
+					<li class="fragment">Cloud data processing costs</li>
+				</ol>
+			</section>
+			<section>
+				<h2>Consumer IoT</h2>
+				<ul>
+					<li class="fragment" data-fragment-index="1">Cell Phones</li>
+					<li class="fragment" data-fragment-index="2">Printers</li>
+					<li class="fragment" data-fragment-index="2">Cameras</li>
+					<li class="fragment" data-fragment-index="2">Access Control</li>
+					<li class="fragment" data-fragment-index="3">Vehicles</li>
+					<li class="fragment" data-fragment-index="3">TVs</li>
+					<li class="fragment" data-fragment-index="3">Appliances</li>
+				</ul>
+			</section>
+			<section>
+				<div style="display: grid">
+					<div style="grid-column: 1; color: #797979;">
+						<h2>Consumer</h2>
+						<ul>
+							<li>Cell Phones</li>
+							<li>Printers</li>
+							<li>Cameras</li>
+							<li>Access Control</li>
+							<li>Vehicles</li>
+							<li>TVs</li>
+							<li>Appliances</li>
+						</ul>
+					</div>
+					<div style="grid-column: 2">
+						<h2>Industrial</h2>
+						<ul>
+							<li class="fragment" data-fragment-index="1">Controls</li>
+							<li class="fragment" data-fragment-index="1">Sensors</li>
+							<li class="fragment" data-fragment-index="2">Supply chain</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+			<section>
+				<h1>Promise of IoT?</h1>
+			</section>
+			<section>
+				<h2>Integration</h2>
+				<ul>
+					<li class="fragment">Supply Chain / Operations</li>
+					<li class="fragment">Operations / Maintenance</li>
+					<li class="fragment">Business / Customer</li>
+				</ul>
+			</section>
+			<section>
+				<h2>What does this mean for us?</h2>
+				<ul>
+					<li class="fragment">Security
+						<ul>
+							<li>Updates</li>
+							<li>Network</li>
+						</ul>
+					</li>
+					<li class="fragment">Health Monitoring</li>
+					<li class="fragment">Variety</li>
+				</ul>
+			</section>
+			<section id="review">
+				<h2>Review</h2>
+				<div style="display: grid">
+					<div style="grid-column: 1;">
+						<ul>
+							<li class="fragment">
+								Trends
+								<ul>
+									<li>IP Networks</li>
+									<li>Cost of devices</li>
+									<li>Network perimeter</li>
+									<li>Cloud</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								Examples of IoT
+							</li>
+						</ul>
+					</div>
+					<div style="grid-column: 2">
+						<ul>
+							<li class="fragment">
+								Promise
+								<ul>
+									<li>Supply Chain / Operations</li>
+									<li>Operations / Maintenance</li>
+									<li>Business / Customer</li>
+								</ul>
+							</li>
+							<li class="fragment">
+								What does this mean for IT pros?
+								<ul>
+									<li>Variety</li>
+									<li>Security</li>
+									<li>Health Monitoring</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+			<section>
+				<h2>Questions?</h2>
+			</section>
+		</div>
+	</div>
+
+	<script src="../reveal/lib/js/head.min.js"></script>
+	<script src="../reveal/js/reveal.js"></script>
+
+	<script>
+		// More info about config & dependencies:
+		// - https://github.com/hakimel/reveal.js#configuration
+		// - https://github.com/hakimel/reveal.js#dependencies
+		Reveal.initialize({
+			controls: false,
+			transition: "fade",
+			transitionSpeed: "fast",
+			dependencies: [
+				{ src: '../reveal/plugin/markdown/marked.js' },
+				{ src: '../reveal/plugin/markdown/markdown.js' },
+				{ src: '../reveal/plugin/notes/notes.js', async: true },
+				{ src: '../reveal/plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+			]
+		});
+	</script>
+</body>
+
+</html>
