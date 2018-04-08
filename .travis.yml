@@ -7,15 +7,16 @@ node_js:
   - "node"
 
 script:
+  - mkdir dist
   - cd src/
   - yarn
   - npm run build
   - cd ..
-  - mkdir output
-  - cp src/public output/blog
+  - cp blog/src/public dist
+  - cp presentations dist
 
 deploy:
-  local-dir: output
+  local-dir: dist
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
