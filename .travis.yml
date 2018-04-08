@@ -8,12 +8,13 @@ node_js:
 
 script:
   - mkdir dist
-  - cd src/
+  - mkdir dist/presentations
+  - cd blog/src/
   - yarn
   - npm run build
-  - cd ..
+  - cd ../../
   - cp blog/src/public dist
-  - cp presentations dist
+  - cp presentations dist/presentations
 
 deploy:
   local-dir: dist
