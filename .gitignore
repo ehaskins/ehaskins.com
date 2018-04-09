@@ -7,3 +7,4 @@ public
 yarn-error.log
 
 artifacts/
+dist/

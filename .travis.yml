@@ -7,14 +7,7 @@ node_js:
   - "node"
 
 script:
-  - mkdir dist
-  - mkdir dist/presentations
-  - cd blog/src/
-  - yarn
-  - npm run build
-  - cd ../../
-  - cp blog/src/public dist
-  - cp presentations dist/presentations
+  - ./build.sh
 
 deploy:
   local-dir: dist
