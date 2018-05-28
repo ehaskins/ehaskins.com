@@ -8,6 +8,7 @@ I've tried to link to original sources wherever possible. Unfortunately, much of
 
 ### General Hardware
 
+* [The Ultimate Game Boy Talk (33c3)](https://www.youtube.com/watch?v=HyzD8pNlpwI)
 * [Schematic](http://marc.rawer.de/Gameboy/gameboy1.gif)
 
 ### CPU
