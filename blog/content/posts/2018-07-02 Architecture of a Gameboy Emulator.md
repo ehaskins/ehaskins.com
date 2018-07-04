@@ -20,7 +20,7 @@ I'm not going to address differences between original Gameboy and GB Color in th
 - Be able to swap GBC peripherals/boot ROM
 - Be able to change CPU speed at runtime, since GBC can run at either 4mhz or 8mhz.
 
-# GameBoy system
+# GameBoy System Overview
 
 ## Clock speeds
 
@@ -42,7 +42,7 @@ Therefore, emulation of > 1 M-cycle instructions must include appropriate read/w
 
 The Gameboy has several difference types of memory. Main (Working) RAM and a boot ROM, video RAM, "high" RAM used for stack and IO, but also the cartidge that can contain a combination of RAM, ROM and battery back RAM for saves.
 
-This memory is seperated onto two buses. Each with 16 address lines, and 8 data. These buses share the same address space. That measn the Gameboy has 64k of address space, and can read/write one 8bit byte at a time.
+This memory is seperated onto two buses. Each with 16 address lines, and 8 data. These buses share the same address space. That measn the Gameboy has 64k of address space, and can read or write one 8bit byte at a time.
 
 The busess are seperate because during certain portions of rendering the PPU takes exclusive access to the DRAM bus, preventing the CPU from reading or writing to the video RAM.
 
@@ -50,9 +50,7 @@ The busess are seperate because during certain portions of rendering the PPU tak
 
 Unlike 8080 and Z80 machines, the Gameboy exclusively uses memory mapped IO. So all IO is done by reading or writing particular memory addresses.
 
-These IO address use the same 64k of address space as RAM and ROM.
-
-## Memory Map
+These IO addresses use the same 64k of address space as the various RAMs and ROMs.
 
 ## Peripherals
 
@@ -72,3 +70,9 @@ Some of the peripherals on the Gameboy
 - Interrupt hardware
 - RAM
 - High Ram
+
+# Emulation
+
+## Bus Timing
+
+Each M-cycle, each peripherals must be emulated. Since CPU instructions can take up to 6 M-cycles, the instruction emulation must either trigger the peripheral emulation, or be broken into segments which can be run each M-cycle.
