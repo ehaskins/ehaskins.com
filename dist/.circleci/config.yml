@@ -1,0 +1,8 @@
+# This folder is commited to gh-pages branch after building. This file prevents Circle from building that branch.
+
+version: 2
+jobs:
+  build:
+    branches:
+      ignore: *
+
