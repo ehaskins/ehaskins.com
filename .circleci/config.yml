@@ -21,7 +21,7 @@ jobs:
       - run:
           name: Install Dependencies
           command: |
-            cd blog\src
+            cd blog/src
             yarn install --frozen-lockfile
       - save_cache:
           name: Save Yarn Package Cache
@@ -32,7 +32,7 @@ jobs:
       - run:
           name: Build
           command: |
-            cd blog\src
+            cd blog/src
             yarn run build
       - run:
           name: Copy blog to output folder
