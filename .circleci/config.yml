@@ -5,6 +5,9 @@
 version: 2
 jobs:
   build:
+    branches:
+      only:
+        - master
     docker:
       - image: circleci/node:11.10.0
 
@@ -49,5 +52,6 @@ jobs:
             git config --global user.email "eric@ehaskins.com"
             git config --global user.name "Eric Haskins"
             git init
-            git commit -a -m "Build ${CIRCLE_BUILD_NUM} from commit ${CIRCLE_SHA1}"
-            git push -q https://${GITHUB_TOKEN}@github.com/ehaskins/ehaskins.com.git gh-pages
+            git add -A
+            git commit -m "Build ${CIRCLE_BUILD_NUM} from commit ${CIRCLE_SHA1}"
+            git push -f https://${GITHUB_TOKEN}@github.com/ehaskins/ehaskins.com.git gh-pages-test2
