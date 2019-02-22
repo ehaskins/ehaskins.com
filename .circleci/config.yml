@@ -47,5 +47,5 @@ jobs:
           command: |
             cd dist
             git init
-            git commit -A -M "Build ${CIRCLE_BUILD_NUM} from commit ${CIRCLE_SHA1}"
+            git commit -a -m "Build ${CIRCLE_BUILD_NUM} from commit ${CIRCLE_SHA1}"
             git push -q https://${GITHUB_TOKEN}@github.com/ehaskins/ehaskins.com.git gh-pages
