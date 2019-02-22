@@ -54,4 +54,4 @@ jobs:
             git init
             git add -A
             git commit -m "Build ${CIRCLE_BUILD_NUM} from commit ${CIRCLE_SHA1}"
-            git push -f https://${GITHUB_TOKEN}@github.com/ehaskins/ehaskins.com.git gh-pages-test2
+            git push -f https://${GITHUB_TOKEN}@github.com/ehaskins/ehaskins.com.git master:gh-pages-test2
