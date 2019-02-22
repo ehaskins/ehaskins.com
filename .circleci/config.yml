@@ -13,31 +13,27 @@ jobs:
     steps:
       - checkout
 
-      - run:
-          name: cd to blog/src
-          command: cd blog/src
-
       # Download and cache dependencies
       - restore_cache:
           name: Restore Yarn Package Cache
           keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
+            - yarn-packages-{{ checksum "blog/src/yarn.lock" }}
       - run:
           name: Install Dependencies
-          command: yarn install --frozen-lockfile
+          command: |
+            cd blog\src
+            yarn install --frozen-lockfile
       - save_cache:
           name: Save Yarn Package Cache
-          key: yarn-packages-{{ checksum "yarn.lock" }}
+          key: yarn-packages-{{ checksum "blog/src/yarn.lock" }}
           paths:
             - ~/.cache/yarn
 
       - run:
           name: Build
-          command: yarn run build
-
-      - run:
-          name: CD to root
-          command: cd ../../
+          command: |
+            cd blog\src
+            yarn run build
       - run:
           name: Copy blog to output folder
           command: cp blog/src/public/* dist -r
