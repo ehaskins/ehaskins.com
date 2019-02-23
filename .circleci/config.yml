@@ -31,6 +31,7 @@ jobs:
           key: yarn-packages-{{ checksum "blog/src/yarn.lock" }}
           paths:
             - ~/.cache/yarn
+            - blog/src/node_modules
 
       - run:
           name: Build

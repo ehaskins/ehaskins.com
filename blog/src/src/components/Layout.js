@@ -1,20 +1,19 @@
 import React from 'react'
 import Link from 'gatsby-link'
-import { Container } from 'react-responsive-grid'
+import { Location } from '@reach/router'
 
-import { rhythm, scale } from '../utils/typography'
+import Typography from '../utils/typography'
+
+let { rhythm, scale } = Typography
 
 class Template extends React.Component {
   render() {
-    const { location, children } = this.props
+    const { loc, children } = this.props
     let header
 
     let rootPath = `/`
-    if (typeof __PREFIX_PATHS__ !== `undefined` && __PREFIX_PATHS__) {
-      rootPath = __PATH_PREFIX__ + `/`
-    }
 
-    if (location.pathname === rootPath) {
+    if (loc.pathname === rootPath) {
       header = (
         <h1
           style={{
@@ -58,17 +57,23 @@ class Template extends React.Component {
       )
     }
     return (
-      <Container
+      <div
         style={{
           maxWidth: rhythm(24),
           padding: `${rhythm(1.5)} ${rhythm(3 / 4)}`,
+          marginRight: 'auto',
+          marginLeft: 'auto',
         }}
       >
         {header}
-        {children()}
-      </Container>
+        {children}
+      </div>
     )
   }
 }
 
-export default Template
+export default props => (
+  <Location>
+    {locationProps => <Template loc={locationProps.location} {...props} />}
+  </Location>
+)
