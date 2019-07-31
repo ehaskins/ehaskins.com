@@ -19,9 +19,9 @@
           </ul>
         </nav>
       </header>
-      <main>
-        <article>
-          <div class="article-header">
+      <article>
+        <header>
+          <div class="title">
             <h1>A Very Important Message</h1>
             <div class="date">September 5th, 2019</div>
             <!-- <ul class="tags">
@@ -35,6 +35,8 @@
             This is the 3rd article in an ongoing series.
             <a href="#seriesinfo">Checkout the rest</a>
           </div>
+        </header>
+        <main>
           <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
@@ -53,8 +55,7 @@
 
           <p>This is some text with <code>inline code</code></p>
           <pre>
-<code>
-.container {
+<code>.container {
   flex: 0 1 960px;
   display: flex;
   flex-flow: column nowrap;
@@ -69,8 +70,8 @@
 ------------------------
      0100 (4)   0001 (1)
 </code>
-
 </pre>
+          <p>adsfadsfa;ldskfja; lkfdja fd</p>
           <pre>
   <code>
     PS C:\Windows Image Update Working> dism /image:"C:\Windows Image Update Working\Mount" /add-package /packagePath:"C:\Windows Image Update Working\Updates"
@@ -78,10 +79,11 @@ Deployment Image Servicing and Management tool
 Version: 6.3.9600.17031
   </code>
 </pre>
+          <p>adsfadsfa;ldskfja; lkfdja fd</p>
           <blockquote>
             This is a quote
           </blockquote>
-
+          <p>adsfadsfa;ldskfja; lkfdja fd</p>
           <table>
             <thead>
               <tr>
@@ -118,18 +120,20 @@ Version: 6.3.9600.17031
               </tr>
             </tbody>
           </table>
-        </article>
-        <div id="seriesinfo">
-          <h1>A series of things</h1>
-          <p>This a demo series to show off shit...</p>
-          <ol class="list">
-            <li><a href="">The first article</a></li>
-            <li><a href="">The second article</a></li>
-            <li class="this-post"><a>This article</a></li>
-            <li class="upcomming">Upcomming article</li>
-          </ol>
-        </div>
-      </main>
+        </main>
+        <footer>
+          <div id="seriesinfo">
+            <h1>A series of things</h1>
+            <p>This a demo series to show off shit...</p>
+            <ol class="list">
+              <li><a href="">The first article</a></li>
+              <li><a href="">The second article</a></li>
+              <li class="this-post"><a>This article</a></li>
+              <li class="upcomming">Upcomming article</li>
+            </ol>
+          </div>
+        </footer>
+      </article>
       <footer>
         <div class="copyright">© 2014-2019 Eric Haskins</div>
       </footer>
