@@ -1,0 +1,871 @@
+<?xml version="1.0" encoding="UTF-8"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" version="2.0"><channel><title><![CDATA[Eric Haskins]]></title><description><![CDATA[A blog of various things]]></description><link>http://ehaskins.com</link><generator>RSS for Node</generator><lastBuildDate>Wed, 31 Jul 2019 03:10:04 GMT</lastBuildDate><item><title><![CDATA[Better Rust WASM Panics]]></title><description><![CDATA[Out of the box panics from Rust WASM are pretty much useless. Install consoleerrorpanic_hook to get panics written to . It’s README is…]]></description><link>http://ehaskins.com/2018-07-19 Better Rust WASM panics/</link><guid isPermaLink="false">http://ehaskins.com/2018-07-19 Better Rust WASM panics/</guid><pubDate>Thu, 19 Jul 2018 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Out of the box panics from Rust WASM are pretty much useless. Install &lt;a href=&quot;https://github.com/rustwasm/console_error_panic_hook&quot;&gt;console&lt;em&gt;error&lt;/em&gt;panic_hook&lt;/a&gt; to get panics written to &lt;code class=&quot;language-text&quot;&gt;console.error&lt;/code&gt;. It’s README is pretty self explanitory.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Webpack, and Typescipt, and Rust]]></title><description><![CDATA[Notes on my configuration Hopefully I’ll put together a self container repo with this configuration, but for now here’s some notes on…]]></description><link>http://ehaskins.com/2018-07-17 Webpack, and Typescipt, and Rust/</link><guid isPermaLink="false">http://ehaskins.com/2018-07-17 Webpack, and Typescipt, and Rust/</guid><pubDate>Tue, 17 Jul 2018 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Notes on my configuration&lt;/h1&gt;
+&lt;p&gt;Hopefully I’ll put together a self container repo with this configuration, but for now here’s some notes on configuring Rust/Wasm build using wasm-bindgen and getting it to play well with TypeScript.&lt;/p&gt;
+&lt;p&gt;With this config, clean webpack builds should succeed without any pre-existing Rust artifacts. Dev-time tooling for typescript will work after the first wasm32 build. Until then the &lt;code class=&quot;language-text&quot;&gt;.d.ts&lt;/code&gt; file for the Rust module won’t exist, and TypeScript will complain it can’t find the module.&lt;/p&gt;
+&lt;p&gt;Next step is to make this all hot-reload, but now without HMR incremental Webpack builds and refreshing the browser works fine.&lt;/p&gt;
+&lt;h1&gt;The configuraton&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Rust&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Install Rust and wasm32-unknown-unknown toolchain, and wasm-bindgen&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://rustwasm.github.io/wasm-bindgen/basic-usage.html&quot;&gt;https://rustwasm.github.io/wasm-bindgen/basic-usage.html&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Webpack&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Configure alias with friendly name pointing to &lt;code class=&quot;language-text&quot;&gt;lib.rs&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Remove &lt;code class=&quot;language-text&quot;&gt;TsconfigPathsPlugin&lt;/code&gt;. It gets confused.&lt;/li&gt;
+&lt;li&gt;Install &lt;code class=&quot;language-text&quot;&gt;rust-native-wasm-loader&lt;/code&gt;, and configure it:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;{
+  test: /\.rs$/,
+  use: [
+    {
+      loader: &amp;#39;rust-native-wasm-loader&amp;#39;,
+      options: {
+        wasmBindgen: {
+        typescript: true
+        }
+      }
+    }
+  ]
+},&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Typescript&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Add mapping from friendly name to wasm-bindgen output, &lt;code class=&quot;language-text&quot;&gt;target/wasm32-unknown-unknown/debug/[filename].js&lt;/code&gt;, to &lt;code class=&quot;language-text&quot;&gt;compilerOptions.paths&lt;/code&gt; property in &lt;code class=&quot;language-text&quot;&gt;tsconfig.json&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Set &lt;code class=&quot;language-text&quot;&gt;compilerOptions.baseUrl&lt;/code&gt; to &lt;code class=&quot;language-text&quot;&gt;./&lt;/code&gt;. &lt;code class=&quot;language-text&quot;&gt;compilerOptions.paths&lt;/code&gt; requires it.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[WTF is the DAA instruction?]]></title><description><![CDATA[Background I’ve been writing a Gameboy emulator. One of the last CPU instructions I have left to implement is . I couldn’t find a good…]]></description><link>http://ehaskins.com/2018-01-30 Z80 DAA/</link><guid isPermaLink="false">http://ehaskins.com/2018-01-30 Z80 DAA/</guid><pubDate>Tue, 30 Jan 2018 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Background&lt;/h1&gt;
+&lt;p&gt;I’ve been writing a Gameboy emulator. One of the last CPU instructions I have left to implement is &lt;code class=&quot;language-text&quot;&gt;DAA&lt;/code&gt;. I couldn’t find a good explaination of what DAA is, let alone why it’s behavior is what it is.&lt;/p&gt;
+&lt;p&gt;I’m writing this post as I try to understand how DAA works and why it exists.&lt;/p&gt;
+&lt;h1&gt;Binary Coded Decimal&lt;/h1&gt;
+&lt;p&gt;Numbers are normally represented in binary, but sometimes (for reasons I’m not sure about) we encode each decimal digit into binary seperately. We call this seperate encoding of each digit “binary coded decimal”.&lt;/p&gt;
+&lt;p&gt;The table below has a few examples. All of the binary and the first 4 BCD values are each 8 bits (1 byte).&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Decimal&lt;/th&gt;
+&lt;th&gt;Binary&lt;/th&gt;
+&lt;th&gt;BCD&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;0000 0001&lt;/td&gt;
+&lt;td&gt;0000 (0) 0001 (1)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;10&lt;/td&gt;
+&lt;td&gt;0000 1010&lt;/td&gt;
+&lt;td&gt;0001 (1) 0000 (0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;32&lt;/td&gt;
+&lt;td&gt;0010 0000&lt;/td&gt;
+&lt;td&gt;0011 (3) 0010 (2)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;99&lt;/td&gt;
+&lt;td&gt;0110 0011&lt;/td&gt;
+&lt;td&gt;1001 (9) 1001 (9)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;0110 0100&lt;/td&gt;
+&lt;td&gt;0001 (1) 0000 (0) 0000 (0)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;So, BCD is pretty ineffecient. Wastes 6 of the 16 possible values each 4 bits can hold. I’m not sure why it’s particularly useful. But, apearantly somebody does.&lt;/p&gt;
+&lt;h1&gt;BCD Math&lt;/h1&gt;
+&lt;p&gt;What happens if we add(or subtract) two BCD values using CPU instuctions designed to be used with regular binary values?&lt;/p&gt;
+&lt;h2&gt;Addition&lt;/h2&gt;
+&lt;p&gt;Let’s look at a simple case.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;1 + 1
+
+(1) 0001
+(1) 0001 +
+------
+(2) 0010&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So that worked, let try something a little harder.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;5 + 5
+
+(5)  0101
+(5)  0101 +
+-----------
+(10) 1010&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That looks ok, but we’re working in BCD, so the output should be in BCD as well.&lt;/p&gt;
+&lt;p&gt;Since 10 is too big to fit in a decimal digit, we need to fix it. It turns out if we add 6 to the result, it produces a valid BCD value.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;(10) 1010
+(6)  0110 +
+-----------
+(16) 0001 (1) 0000 (0)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If the sum in greater, than 9, add 6.&lt;/p&gt;
+&lt;p&gt;It turns out this works for any single decimal digit addition, even when it overflows into a 5th bit.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;(7)       0111
+(9)       1001 +
+----------
+(16) 0001 0000
+
+16 &amp;gt; 9, so
+
+(16) 0001     0000
+(6)  0000     0110 +
+----------------
+     0001 (1) 0110 (6)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Two Digit Addition&lt;/h2&gt;
+&lt;p&gt;Turns out this even works for two digit addition.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;19 + 28 = 47
+
+       11 (carries)
+(19) 0001 (1) 1001 (9)
+(28) 0010 (2) 1000 (8) +
+------------------------
+     0100 (4)   0001 (1)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Looking at the first 4 bits, they’re only 1 which according to our rule wouldn’t need to be corrected, but we need to look at the carry from the 4th to the 5th bit.&lt;/p&gt;
+&lt;p&gt;Since there was a carry from the 4th to 5th bit, it the first 4 bit addition really producted &lt;code class=&quot;language-text&quot;&gt;0001 0001&lt;/code&gt;. which is greater than &lt;code class=&quot;language-text&quot;&gt;9&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;0100 (4)   0001 (1)
+0000 (0)   0110 (6) +
+---------------------
+0100 (4)   0111 (7)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Subtraction&lt;/h2&gt;
+&lt;p&gt;So addition, even with multiple deciaml digits works with the same rule.&lt;/p&gt;
+&lt;p&gt;What about subtraction? Well, computers don’t really do subtraction like humans do. They do subtraction by adding the “two’s complement” of the value being subtracted to the value it’s being subtracted from.&lt;/p&gt;
+&lt;p&gt;To compute a “two’s complement”, you invert all the bits, then add 1. Odd, I know, but it works.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;47-28=19
+
+Complement of 28
+(28) 0010 (2) 1000 (8)
+     1101     0111 (invert bits)
+                 1 + (add 1)
+    ----------------
+     1101     1000&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So now we subtract by adding.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;47-28=19
+
+   1 1
+(48) 0100 (4) 0111 (7)
+     1101     1000
+------------------------
+     0001 (1) 1111 (15)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Our first 4 bits are &lt;code class=&quot;language-text&quot;&gt;1111 (15)&lt;/code&gt;, we know our answer should be &lt;code class=&quot;language-text&quot;&gt;9&lt;/code&gt;. When adding we add 6 to any digit greater than 9. When subtracting, we subtract 6 from any digit greater than 9.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Complement 06
+0000 0110
+1111 1001
+Add 1
+1111 1010
+
+1
+  0001 (1) 1111 (15)
+  1111     1010 +
+---------------------
+  0001 (1) 1001 (9)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;There’s carry out of the 8th bit, but we’ll ignore that.&lt;/p&gt;
+&lt;h1&gt;Isn’t This Post About DAA?&lt;/h1&gt;
+&lt;p&gt;Now that we know what BCD is, how to correct when it’s added or subtracted in a binary added, we can figure out the logic for DAA.&lt;/p&gt;
+&lt;p&gt;DAA is intended to be run immediately after an addition or subtraction operation, where the operands were BCD encoded. It then makes the corrections described above, so the result (stored in the A register) is the BCD encoded result of the previous operation.&lt;/p&gt;
+&lt;p&gt;However, DAA doesn’t know what the original values were, and has minimal information about the calculation.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Value to be corrected&lt;/td&gt;
+&lt;td&gt;Stored in register A&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Half carry (H) flag&lt;/td&gt;
+&lt;td&gt;1 if there was a carry from bit 4 to 5&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Carry (C) flag&lt;/td&gt;
+&lt;td&gt;1 if there was a carry from bit 8&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Subtraction (N)&lt;/td&gt;
+&lt;td&gt;1 if the previous operation was a subtraction&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;We can distill our rules into&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;If adding&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Add 6 to each digit greater than 9, or if it carried&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;If subtracting&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Subtract 6 from each digit greater than 9, or if it carried&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;On a Z80, at least, the DAA instruction sets a couple of flags based on the final value. The logic for these is at the end of the function.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Flag&lt;/th&gt;
+&lt;th&gt;Condition&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Carry (C)&lt;/td&gt;
+&lt;td&gt;Output &gt; 0x99&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Zero (Z)&lt;/td&gt;
+&lt;td&gt;Output == 0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h1&gt;Some Code…&lt;/h1&gt;
+&lt;p&gt;Turns out there’s a lot of poorly documented edge cases in &lt;code class=&quot;language-text&quot;&gt;daa&lt;/code&gt;. This is the code I ended up with, which works.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;typescript&quot;&gt;&lt;pre class=&quot;language-typescript&quot;&gt;&lt;code class=&quot;language-typescript&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;token constant&quot;&gt;DAA&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token parameter&quot;&gt;value&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token builtin&quot;&gt;number&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; subtraction&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; bool&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; carry&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; bool&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; halfCarry&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; bool&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; correction &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;let&lt;/span&gt; setFlagC &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;flagH &lt;span class=&quot;token operator&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt;flagN &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;value &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0xf&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    correction &lt;span class=&quot;token operator&quot;&gt;|=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0x6&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;flagC &lt;span class=&quot;token operator&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token operator&quot;&gt;!&lt;/span&gt;flagN &lt;span class=&quot;token operator&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; value &lt;span class=&quot;token operator&quot;&gt;&gt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0x99&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+    correction &lt;span class=&quot;token operator&quot;&gt;|=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0x60&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+    setFlagC &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;token constant&quot;&gt;FLAG_C&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+  value &lt;span class=&quot;token operator&quot;&gt;+=&lt;/span&gt; flagN &lt;span class=&quot;token operator&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;-&lt;/span&gt;correction &lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; correction&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+  value &lt;span class=&quot;token operator&quot;&gt;&amp;amp;=&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0xff&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;const&lt;/span&gt; setFlagZ &lt;span class=&quot;token operator&quot;&gt;=&lt;/span&gt; value &lt;span class=&quot;token operator&quot;&gt;===&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;token constant&quot;&gt;FLAG_Z&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+  regF &lt;span class=&quot;token operator&quot;&gt;&amp;amp;=&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;~&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token constant&quot;&gt;FLAG_H&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token constant&quot;&gt;FLAG_Z&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;token constant&quot;&gt;FLAG_C&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+  regF &lt;span class=&quot;token operator&quot;&gt;|=&lt;/span&gt; setFlagC &lt;span class=&quot;token operator&quot;&gt;|&lt;/span&gt; setFlagZ&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;
+
+  &lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt; output&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; carry&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; zero &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So that’s the DAA instruction, though I’m still not sure why you’d want to use BCD.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Configuring NPS for authentication on HP switches]]></title><description><![CDATA[Prereqs I’m assuming you have the NPS role installed on a Windows server, and a switch configured to the point where it can communicate with…]]></description><link>http://ehaskins.com/2016-06-28 Configuring NPS for authentication on HP switches/</link><guid isPermaLink="false">http://ehaskins.com/2016-06-28 Configuring NPS for authentication on HP switches/</guid><pubDate>Tue, 28 Jun 2016 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Prereqs&lt;/h1&gt;
+&lt;p&gt;I’m assuming you have the NPS role installed on a Windows server, and a switch configured to the point where it can communicate with (can ping) the NPS server.&lt;/p&gt;
+&lt;h1&gt;Setup NPS&lt;/h1&gt;
+&lt;h2&gt;Create RADIUS Client&lt;/h2&gt;
+&lt;p&gt;Create a new RADIUS client as follows:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Friendly Name - Anything you want&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Switches&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;IP Address - The address of a specific switch, or the subnet that contains all your switch in CIDR format.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;10.0.1.0/24&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Shared Secret - A 32 char (or less) secret. You’ll need it later.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Create the Connection Request Policy&lt;/h2&gt;
+&lt;p&gt;Create a new Connection Request Policy with the following settings:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Name - Switch Connection Policy&lt;/li&gt;
+&lt;li&gt;Type of server&lt;/li&gt;
+&lt;li&gt;Unspecified&lt;/li&gt;
+&lt;li&gt;Conditions - Add the following&lt;/li&gt;
+&lt;li&gt;Client Friendly Name = Friendly Name from above&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Create Network Policy&lt;/h2&gt;
+&lt;p&gt;Create a new network policy with:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Name - Anything you’d like&lt;/li&gt;
+&lt;li&gt;Switch Admin Policy&lt;/li&gt;
+&lt;li&gt;Type of server&lt;/li&gt;
+&lt;li&gt;Unspecified&lt;/li&gt;
+&lt;li&gt;Conditions:&lt;/li&gt;
+&lt;li&gt;Windows Group - Used to filter to only admin users&lt;/li&gt;
+&lt;li&gt;Add it and select an appropriate security group to have access to the switches.&lt;/li&gt;
+&lt;li&gt;Client Friendly Name - Limit this policy to your switches. Use the friendly name from the RADIUS client.&lt;/li&gt;
+&lt;li&gt;Switches&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Permissions&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Access granted&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;EAP Types&lt;/li&gt;
+&lt;li&gt;Add PEAP&lt;/li&gt;
+&lt;li&gt;Less Secure authentication methods&lt;/li&gt;
+&lt;li&gt;Unselect all&lt;/li&gt;
+&lt;li&gt;Under RADIUS Attributes&gt;Standard&lt;/li&gt;
+&lt;li&gt;Set Service-Type to Administrative (under “Others” drop-down)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Configure Switch&lt;/h1&gt;
+&lt;p&gt;Here are the relevant commands for the switch. &lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;;Disable the telnet server since we don&amp;#39;t want domain creds flying around in plain text
+no telnet-server
+
+;Setup the RADIUS server info
+radius-server host &amp;lt;NPS Server IP&amp;gt;
+radius-server key &amp;quot;&amp;lt;Your Secret Key from the RADIUS Client in NPS&amp;gt;&amp;quot;
+
+;Set switch to go immediately to enable mode once authenticated
+aaa authentication login privilege-mode
+
+;Configure specific interfaces to use the RADIUS server
+aaa authentication web login peap-mschapv2
+aaa authentication web enable peap-mschapv2
+aaa authentication ssh login peap-mschapv2
+aaa authentication ssh enable peap-mschapv2
+
+;I omitted console since I want a backdoor in case of network issues, and have adequate physical access controls
+;aaa authentication console login peap-mschapv2 local
+;aaa authentication console enable peap-mschapv2 local&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content:encoded></item><item><title><![CDATA[IIS - Configure URL Rewrite to Redirect all Traffic to HTTPS]]></title><description><![CDATA[Get URL Rewrite Install URL Rewrite from http://www.iis.net/downloads/microsoft/url-rewrite or the Web Platform Installer. Configure it…]]></description><link>http://ehaskins.com/2015-12-30 IIS - Configure URL Rewrite to Redirect all Traffic to HTTPS/</link><guid isPermaLink="false">http://ehaskins.com/2015-12-30 IIS - Configure URL Rewrite to Redirect all Traffic to HTTPS/</guid><pubDate>Wed, 30 Dec 2015 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Get URL Rewrite&lt;/h1&gt;
+&lt;p&gt;Install URL Rewrite from &lt;a href=&quot;http://www.iis.net/downloads/microsoft/url-rewrite&quot;&gt;http://www.iis.net/downloads/microsoft/url-rewrite&lt;/a&gt; or the Web Platform Installer.&lt;/p&gt;
+&lt;h1&gt;Configure it&lt;/h1&gt;
+&lt;p&gt;Merge this into your existing &lt;code class=&quot;language-text&quot;&gt;web.config&lt;/code&gt;, and all traffic will be redirected to HTTPS.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;&amp;lt;configuration&amp;gt;
+    &amp;lt;system.webServer&amp;gt;
+        &amp;lt;rewrite&amp;gt;
+            &amp;lt;rules&amp;gt;
+                &amp;lt;rule name=&amp;quot;Redirect to HTTPS&amp;quot; stopProcessing=&amp;quot;true&amp;quot;&amp;gt;
+                    &amp;lt;match url=&amp;quot;(.*)&amp;quot; /&amp;gt;
+                    &amp;lt;conditions&amp;gt;
+                        &amp;lt;add input=&amp;quot;{HTTPS}&amp;quot; pattern=&amp;quot;OFF&amp;quot; /&amp;gt;
+                    &amp;lt;/conditions&amp;gt;
+                    &amp;lt;action type=&amp;quot;Redirect&amp;quot; url=&amp;quot;https://{HTTP_HOST}/{R:1}&amp;quot; /&amp;gt;
+                &amp;lt;/rule&amp;gt;
+            &amp;lt;/rules&amp;gt;
+        &amp;lt;/rewrite&amp;gt;
+    &amp;lt;/system.webServer&amp;gt;
+&amp;lt;/configuration&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content:encoded></item><item><title><![CDATA[DISM - 0x80070003 - The system cannot find the path specified]]></title><description><![CDATA[I just spent way too much time figuring out why this command was failing. Turns out DISM doesn’t like spaces in the paths. Renamed a couple…]]></description><link>http://ehaskins.com/2015-11-15 DISM - 0x80070003 - Path cannot be found/</link><guid isPermaLink="false">http://ehaskins.com/2015-11-15 DISM - 0x80070003 - Path cannot be found/</guid><pubDate>Sun, 15 Nov 2015 00:00:00 GMT</pubDate><content:encoded>&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;PS C:\Windows Image Update Working&amp;gt; dism /image:&amp;quot;C:\Windows Image Update Working\Mount&amp;quot; /add-package /packagePath:&amp;quot;C:\Windows Image Update Working\Updates&amp;quot;
+Deployment Image Servicing and Management tool
+Version: 6.3.9600.17031
+
+Image Version: 6.1.7600.16385
+
+An error occurred trying to open - C:\Windows Image Update Working\Updates Error: 0x80070003
+
+Error: 3
+
+The system cannot find the path specified.
+
+The DISM log file can be found at C:\Windows\Logs\DISM\dism.log&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I just spent way too much time figuring out why this command was failing.&lt;/p&gt;
+&lt;p&gt;Turns out DISM doesn’t like spaces in the paths. Renamed a couple directories, and now everything is happy.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;PS C:\WindowsImageUpdateWorkingDir&amp;gt; dism /image:&amp;quot;C:\WindowsImageUpdateWorkingDir\Mount&amp;quot; /add-package /packagePath:&amp;quot;C:\WindowsImageUpdateWorkingDir\Updates&amp;quot;
+Dployment Image Servicing and Management tool
+Version: 6.3.9600.17031
+
+Image Version: 6.1.7600.16385
+
+Processing 1 of 212 - Adding package Package_for_KB3100773~31bf3856ad364e35~amd64~~
+10.2.1.0
+Processing 2 of 212 - Adding package Package_for_KB3100773~31bf3856ad364e35~amd64~~
+11.2.1.0
+Processing 3 of 212 - Adding package Package_for_KB3100773~31bf3856ad364e35~amd64~~
+9.4.1.0
+Processing 4 of 212 - Adding package Package_for_KB2393802~31bf3856ad364e35~amd64~~
+6.1.1.1
+Processing 5 of 212 - Adding package Package_for_KB2479943~31bf3856ad364e35~amd64~~
+6.1.1.0
+...&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content:encoded></item><item><title><![CDATA[Script - List Inactive Users or Computers in AD]]></title><description><![CDATA[Why I’m cleaning up an Active Directory domain, and needed to get an idea of how many computers are in use vs. inactive. Script I’m doing…]]></description><link>http://ehaskins.com/2015-11-05 Script - List Inactive Users or Computers in AD/</link><guid isPermaLink="false">http://ehaskins.com/2015-11-05 Script - List Inactive Users or Computers in AD/</guid><pubDate>Thu, 05 Nov 2015 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Why&lt;/h1&gt;
+&lt;p&gt;I’m cleaning up an Active Directory domain, and needed to get an idea of how many computers are in use vs. inactive.&lt;/p&gt;
+&lt;h1&gt;Script&lt;/h1&gt;
+&lt;p&gt;I’m doing some other spluking with this, so I’m going to stick a list of all computers in a variable. I’m including the &lt;code class=&quot;language-text&quot;&gt;lastLogonTimeStamp&lt;/code&gt; we’re going to use to figure out which computers are active.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$rawComputers = Get-ADComputer -Filter * -Properties lastLogonTimestamp&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-text&quot;&gt;lastLogonTimeStamp&lt;/code&gt; is represented as a file timestamp, not a &lt;code class=&quot;language-text&quot;&gt;DateTime&lt;/code&gt;. Let’s fix that an get rid of some extra properties.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$computers = $rawComputers | select Name, DistinguishedName, Enabled, @{Name=&amp;quot;Timestamp&amp;quot;; Expression={[DateTime]::FromFileTime($_.lastLogonTimestamp)}}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;How many have a &lt;code class=&quot;language-text&quot;&gt;lastLogonTimeStamp&lt;/code&gt; more than 30 days old?&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$cutoff = [DateTime]::Now.Subtract([TimeSpan]::FromDays(30))
+($computers | ? {$_.Timestamp -lt $cutoff}).Count&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Let’s export that to a CSV.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$computers | ? {$_.Timestamp -lt $cutoff} | Export-CSV -NoTypeInformation -Path InactiveComputers.csv&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Resources&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://blogs.technet.com/b/askds/archive/2009/04/15/the-lastlogontimestamp-attribute-what-it-was-designed-for-and-how-it-works.aspx?PageIndex=2#comments&quot;&gt;Ask the Directory Services Team - “The LastLogonTimeStamp Attribute” – “What it was designed for and how it works”&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[Hololens First Impressions]]></title><description><![CDATA[What happened I got to attend a Hololens demo in Chicago today.  Orientation It started with a brief “orientation” where they showed a video…]]></description><link>http://ehaskins.com/2015-10-28 Hololens First Impressions/</link><guid isPermaLink="false">http://ehaskins.com/2015-10-28 Hololens First Impressions/</guid><pubDate>Wed, 28 Oct 2015 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;What happened&lt;/h1&gt;
+&lt;p&gt;I got to attend a Hololens demo in Chicago today. &lt;/p&gt;
+&lt;h2&gt;Orientation&lt;/h2&gt;
+&lt;p&gt;It started with a brief “orientation” where they showed a video how to wear the device and adjust the headset, they took a PD (pupil distance) measurement, mine is 67.5 if you’re wondering. They say PD measurement and adjustment will be automatic on the production device, but for now it’s manual. &lt;/p&gt;
+&lt;h2&gt;Project X-Ray&lt;/h2&gt;
+&lt;p&gt;I got to play the project X-Ray game shown a few weeks ago at the Windows Devices event. Unfortunately my experiance didn’t include the controller used in the on stage demo, or the awesome sword arm. Take a look at this video so you know what I’m talking about.&lt;/p&gt;
+
+          &lt;div
+            class=&quot;gatsby-resp-iframe-wrapper&quot;
+            style=&quot;padding-bottom: 56.25%; position: relative; height: 0; overflow: hidden;margin-bottom: 1.0725rem&quot;
+          &gt;
+            &lt;iframe src=&quot;https://www.youtube.com/embed/C3rNIxMlKmI?start=216&quot; frameborder=&quot;0&quot; allowfullscreen style=&quot;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          &quot;&gt;&lt;/iframe&gt;
+          &lt;/div&gt;
+          
+&lt;h1&gt;Issues&lt;/h1&gt;
+&lt;p&gt;Let’s start with a disclaimer. They said the device I used was a prototype, and lots of things could change.&lt;/p&gt;
+&lt;h2&gt;Field of view&lt;/h2&gt;
+&lt;p&gt;There’s a area of your vision where holograms can be projected. They wouldn’t give me numbers and it’s hard to say exactly, but I’d guess it covers an area about the same size as my 24” monitors at normal working distances.&lt;/p&gt;
+&lt;p&gt;The field of view was noticible at first, but as soon as aliens started popping out of the wall I really didn’t notice it much. I had been considering applications for Hololens where informaiton would be on the periphery of your vision (basicaly a IRL video game HUD), but Hololens’ field of view would likley force any holograms into the center of your vision to be usable.&lt;/p&gt;
+&lt;h2&gt;Gestures&lt;/h2&gt;
+&lt;p&gt;The Project X-Ray game, and most of the other Hololens demo videos, use an “air click” gesture where you make a fist, point your index finger straigt up, then while keeping your index finger straigt touch it to your thumb. The Hololens does have WiFi and Bluetooth, so I could see adding a Wiimote style controller for extra control.&lt;/p&gt;
+&lt;p&gt;I found this to be a slightly ackward gesture, but more importantly Hololens seems to have a limit to how quick of gestures it can recognize. They said the game had a half-second “reload”, but I wonder how much of that is a hardware limitation.&lt;/p&gt;
+&lt;h1&gt;The Good&lt;/h1&gt;
+&lt;p&gt;It did have lots of good things.&lt;/p&gt;
+&lt;h2&gt;Holograms&lt;/h2&gt;
+&lt;p&gt;The demo videos Microsoft has shown are pretty realistic. The graphics quality, framerate, and visual quality all are what I’d expect given the demo videos. The field of view was a bit supprising, but otherwise quite good. &lt;/p&gt;
+&lt;p&gt;The holograms aren’t lifelike. They have a distinct “made of light” feel that I can’t quite explain, but they definately feel like part of the world. Even when the X-Ray vision let me see the enimies crawling in the walls it just seemed right.&lt;/p&gt;
+&lt;h2&gt;Size and Weight&lt;/h2&gt;
+&lt;p&gt;I only wore it for a few minutes, but it was light and comfortable. The adjustment was just barely large enough for my head, but it did fit. I didn’t wear it long enought to know if it would be comfortable for hours at a time, but I didn’t see any reason it wouldn’t.&lt;/p&gt;
+&lt;h2&gt;Room Scanning&lt;/h2&gt;
+&lt;p&gt;At the beginning of the game, we went through a room learning process. Basically, it overlaid a glowing 3D mesh over the room. As I looked around the room it filled in the mesh until all of the walls were a triangular red mesh. The process was quick and simple.&lt;/p&gt;
+&lt;p&gt;The only glitch was that it saw my guide as part of the room. Later I was able to use the invisible person as a shield. &lt;/p&gt;
+&lt;h2&gt;Sound&lt;/h2&gt;
+&lt;p&gt;Sound was suprisingly good. It didn’t have any of the tiny speaker sound I was concerned about, while still allowing me to hear the real world around me.&lt;/p&gt;
+&lt;h1&gt;Overall Impressions&lt;/h1&gt;
+&lt;p&gt;It’s still a pre-V1 product, but it’s not like anything else I’ve seen. Unless there are some dramatic issues not visible in a short demo (battery life, performance in real rooms, hologram visbility in bright areas, etc.) I think there will be some great uses for it. I just need to think of one so I can talk myself into buying a dev unit early next year…&lt;/p&gt;</content:encoded></item><item><title><![CDATA[Script - Using SCCM and MDT task sequence variables in PowerShell]]></title><description><![CDATA[Just the code Get TSEnv instance Read a variable Set or create a variable Get all of the variables Write a subset of the variables to a JSON…]]></description><link>http://ehaskins.com/2015-09-22 Script - Using SCCM and MDT task sequence variables in PowerShell/</link><guid isPermaLink="false">http://ehaskins.com/2015-09-22 Script - Using SCCM and MDT task sequence variables in PowerShell/</guid><pubDate>Tue, 22 Sep 2015 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Just the code&lt;/h1&gt;
+&lt;h2&gt;Get TSEnv instance&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$ts = New-Object -COMObject Microsoft.SMS.TSEnvironment &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Read a variable&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$foo = $ts.Value(&amp;quot;Foo&amp;quot;)&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Set or create a variable&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$ts.Value(&amp;quot;Bar&amp;quot;) = $bar&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Get all of the variables&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$ts.GetVariables() | ForEach-Object {
+	New-Object psobject -Property @{
+		Name=$_;
+		Value=$ts.Value($_)
+	}
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Write a subset of the variables to a JSON file&lt;/h2&gt;
+&lt;p&gt;Building on the last snippet we can write that to a JSON file on disk.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$ts.GetVariables() `
+| Where-Object {$_ -notlike &amp;quot;_*&amp;quot;} `
+| ForEach-Object {
+	New-Object psobject -Property @{
+		Name=$_;
+		Value=$ts.Value($_)
+	}
+} `
+| ConvertTo-Json `
+| Set-Content &amp;#39;tsVariables.json&amp;#39;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Read the variables back, and update them from the JSON file&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$json = Get-Content &amp;#39;tsVariables.json&amp;#39; | ConvertFrom-Json
+$json | ForEach-Object {$ts.Value($_.Name) = $_.Value}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content:encoded></item><item><title><![CDATA[Script - Save a GPOReport for Every GPO in a Domain Using PowerShell]]></title><description><![CDATA[Backgroud You can generate a report from Group Policy Management Console that includes all of the setting, links, permissions and other…]]></description><link>http://ehaskins.com/2015-09-07 Script - Save a GPOReport for Every GPO in a Domain Using PowerShell/</link><guid isPermaLink="false">http://ehaskins.com/2015-09-07 Script - Save a GPOReport for Every GPO in a Domain Using PowerShell/</guid><pubDate>Mon, 07 Sep 2015 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Backgroud&lt;/h1&gt;
+&lt;p&gt;You can generate a report from Group Policy Management Console that includes all of the setting, links, permissions and other settings for a GPO. &lt;/p&gt;
+&lt;p&gt;I want to generate that report for every GPO in my domain, but not have to open every one in GPMC to do so.&lt;/p&gt;
+&lt;h1&gt;The Sript&lt;/h1&gt;
+&lt;p&gt;This is a pretty simple one-liner, so I’ll get straigt to it.&lt;/p&gt;
+&lt;p&gt;We can get a list of all of the GPOs in a domain with this:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Get-GPO -All&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then we can get a GPO Report like this:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Get-GPOReport -Name MyGPO -ReportType Html -Path report.html&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;We can even get a single report with all of the GPOs in a single html file like this:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Get-GPOReport -All -ReportType Html -Path report.html&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If that works for you, then stip here, but I want a directory with a file for each GPO.&lt;/p&gt;
+&lt;p&gt;Luckily we can combine those two cmdlets like this to get what I want.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Get-GPO -All | ForEach-Object {$_ | Get-GPOReport -ReportType HTML -Path &amp;quot;c:\GPOReports\$($_.DisplayName).html&amp;quot;}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Notice I didn’t pipe directly to the &lt;code class=&quot;language-text&quot;&gt;Get-GPOReport&lt;/code&gt; cmdlet. That allows me to include the name of the GPO in the path parameter provided to Get-GPOReport.&lt;/p&gt;
+&lt;h1&gt;Resources&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://technet.microsoft.com/en-us/library/ee461027.aspx&quot;&gt;TechNet GroupPolicy Cmdlets in Windows PowerShell&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item><item><title><![CDATA[Script - Constrained Delegation for Hyper-V Live Migrations]]></title><description><![CDATA[Background There are two options for Live Migration security in Hyper-V. Credential Security Support Provider (CredSSP) No configuration…]]></description><link>http://ehaskins.com/2015-09-02 Script - Constrained Delegation for Hyper-V Live Migrations/</link><guid isPermaLink="false">http://ehaskins.com/2015-09-02 Script - Constrained Delegation for Hyper-V Live Migrations/</guid><pubDate>Wed, 02 Sep 2015 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Background&lt;/h1&gt;
+&lt;p&gt;There are two options for Live Migration security in Hyper-V.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Credential Security Support Provider (CredSSP)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;No configuration&lt;/li&gt;
+&lt;li&gt;Must login locally/RDP to origin host to initiate the transfer&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Kerberos&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Allows you to initiate the migration from any machine&lt;/li&gt;
+&lt;li&gt;Requres you configure constrained delegation on between the hosts&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;It’s not a hard job to add the delegation for a pair of servers, but once you have a few it quickly becomes a pain. We’re going to write a little PowerShell script to setup constrained delegation between any number of hosts.&lt;/p&gt;
+&lt;h2&gt;Resources&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://technet.microsoft.com/en-us/library/jj134199.aspx&quot;&gt;TechNet Article on configuring Live Migration&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;What do we need to do?&lt;/h1&gt;
+&lt;p&gt;I’ve enabled constrained delegation between two servers (&lt;code class=&quot;language-text&quot;&gt;host&lt;/code&gt; and &lt;code class=&quot;language-text&quot;&gt;host2&lt;/code&gt;) using Active Directory Users and Computers. We’ll use &lt;code class=&quot;language-text&quot;&gt;host2&lt;/code&gt; as the source, and &lt;code class=&quot;language-text&quot;&gt;host&lt;/code&gt; for the destination.&lt;/p&gt;
+&lt;p&gt;Let’s see what kind of changes we see of the &lt;code class=&quot;language-text&quot;&gt;host2&lt;/code&gt;’s account after setting up constrained delegation.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;PS C:\Users\ehaskins&amp;gt; Get-ADComputer host2 -Properties * | fc * -Depth 1
+
+class ADComputer
+{
+  ...
+  DistinguishedName = CN=HOST2,OU=Servers,OU=IT,OU=EHNet,DC=ehnet,DC=ehaskins,D
+  C=net
+  DNSHostName = HOST2.ehnet.ehaskins.net
+  ...
+  msDS-AllowedToDelegateTo =
+    [
+      Microsoft Virtual System Migration Service/HOST.ehnet.ehaskins.net
+      Microsoft Virtual System Migration Service/HOST
+      cifs/HOST.ehnet.ehaskins.net
+      cifs/HOST
+    ]
+  ...
+  PropertyCount = 85
+}
+PS C:\Users\ehaskins&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Looking through that output we can see what the constained delegation dialog is doing. It’s just adding items to &lt;code class=&quot;language-text&quot;&gt;msDS-AllowedToDelegateTo&lt;/code&gt; property of the source host. They seem to just be in the form of &lt;code class=&quot;language-text&quot;&gt;service/machine&lt;/code&gt;. For some reason it added both the qualified and unqualified names. I don’t know why, but we can replicate that behavior…&lt;/p&gt;
+&lt;p&gt;I also figured out from experimenting that you can list a server in it’s own AllowedToDeledateTo list without breaking anything. That’s helpful since that means we can set all the hosts the same.&lt;/p&gt;
+&lt;h1&gt;The plan&lt;/h1&gt;
+&lt;p&gt;We need to:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Create a list of values to put in &lt;code class=&quot;language-text&quot;&gt;msDS-AllowedToDelegateTo&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Set the &lt;code class=&quot;language-text&quot;&gt;msDS-AllowedToDelegateTo&lt;/code&gt; property on each server&lt;/li&gt;
+&lt;li&gt;We’re going to replace any existing content there, but could make this smarter in the future.&lt;/li&gt;
+&lt;li&gt;Celebrate&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2&gt;Build the &lt;code class=&quot;language-text&quot;&gt;msDS-AllowedToDelegateTo&lt;/code&gt; list&lt;/h2&gt;
+&lt;p&gt;We can do something list this.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;$domain = &amp;#39;ehnet.ehaskins.net&amp;#39;
+$servers = @(
+  &amp;#39;host&amp;#39;, 
+  &amp;#39;host2&amp;#39;
+)
+
+$services = @(
+  &amp;#39;Microsoft Virtual System Migration Service&amp;#39;,
+  &amp;#39;cifs&amp;#39;
+)
+
+$allowDelgationTo = foreach ($server in $servers){
+    foreach ($service in $services){
+        &amp;#39;{0}/{1}&amp;#39; -f $service, $server
+        &amp;#39;{0}/{1}.{2}&amp;#39; -f $service, $server, $domain
+    }
+}
+
+$allowDelgationTo&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;When we run that we get this, which other than some capitalization differences looks a lot like the output from above. I think it’ll work.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Microsoft Virtual System Migration Service/host
+Microsoft Virtual System Migration Service/host.ehnet.ehaskins.net
+cifs/host
+cifs/host.ehnet.ehaskins.net
+Microsoft Virtual System Migration Service/host2
+Microsoft Virtual System Migration Service/host2.ehnet.ehaskins.net
+cifs/host2
+cifs/host2.ehnet.ehaskins.net&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Write the value to AD&lt;/h2&gt;
+&lt;p&gt;Normally we could just use &lt;code class=&quot;language-text&quot;&gt;Set-AdComputer&lt;/code&gt;, but unfortunately it doesn’t have a parameter to set this property. Instead, we’re going to use &lt;code class=&quot;language-text&quot;&gt;Set-AdComputer -Instance&lt;/code&gt; to save an object we’ve modified.&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;foreach ($server in $servers){
+    $acct = get-adcomputer host -Properties msDS-AllowedToDelegateTo
+
+    # Note we&amp;#39;re putting the property name in quotes since in contains a &amp;quot;-&amp;quot; which is&amp;#39;t allowed normally.
+    $acct.&amp;quot;msDS-AllowedToDelegateTo&amp;quot; = $allowDelgationTo
+    Set-ADComputer -Instance $acct
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Completed Script&lt;/h1&gt;
+&lt;script src=&quot;https://gist.github.com/ehaskins/90302dc2356d28e724a1.js&quot;&gt;&lt;/script&gt;</content:encoded></item><item><title><![CDATA[Docker in Hyper-V on Windows 10]]></title><description><![CDATA[These are my notes for setting up docker on Windows 10 10240. Don’t take them
+as any more. I run all of this from a Git Shell PowerShell…]]></description><link>http://ehaskins.com/2015-07-27 Docker in Hyper-V on Windows 10/</link><guid isPermaLink="false">http://ehaskins.com/2015-07-27 Docker in Hyper-V on Windows 10/</guid><pubDate>Mon, 27 Jul 2015 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;These are my notes for setting up docker on Windows 10 10240. Don’t take them
+as any more.&lt;/p&gt;
+&lt;p&gt;I run all of this from a Git Shell PowerShell instance since that’ll have SSH
+and git available. The only exception is the actual creation command, which has
+to be run from an Administrative instance.&lt;/p&gt;
+&lt;h1&gt;Prep&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Install Hyper-V&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Download Docker-Machine and Docker&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;mkdir c:\docker
+cd c:\docker
+Invoke-WebRequest -Uri https://get.docker.com/builds/Windows/x86_64/docker-latest.exe  -OutFile docker.exe
+Invoke-WebRequest -Uri https://github.com/docker/machine/releases/download/v0.3.0/docker-machine_windows-amd64.exe -OutFile docker-machine.exe&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Add docker folder to path for future PS instances&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;Add-Content -Path $profile -Value &amp;#39;$env:path += &amp;quot;;c:\docker\&amp;quot;&amp;#39;
+$env:path += &amp;quot;;c:\docker\&amp;quot;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Create Docker VM&lt;/h1&gt;
+&lt;p&gt;You need to run this from an Administrative PowerShell instance, or you’ll get very unhelpful errors.&lt;/p&gt;
+&lt;p&gt;If you don’t have a VMSwitch created yet, you’ll need to do that. &lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;#Create a new VMSwitch connected to the first connected NIC
+New-VMSwitch -Name External -NetAdapterName (Get-NetAdapter | ? {$_.Status -eq &amp;#39;Up&amp;#39;} | Select -First 1).Name
+
+#Create the Docker VM
+docker-machine create --driver hyper-v dev&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Setup for environment for connection with Docker cli&lt;/h1&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;# Add environment variables docker expects
+docker-machine env dev | Invoke-Expression
+
+# List containers in your Docker VM
+docker ps&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;See it do something!&lt;/h1&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;docker run hello-world&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Misc. commands I’ll want to remember&lt;/h1&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;# Prints available machines to manage
+docker-machine ls
+
+# Get IP of Docker VM
+docker-machine ip dev
+
+# Start machine
+docker start dev
+
+# Stop machine
+docker-machine stop
+
+# Add environment variables docker expects
+docker-machine env --shell powershell dev | Invoke-Expression
+
+# List containers in your Docker VM
+docker ps&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</content:encoded></item><item><title><![CDATA[Securing ASP.net 5 WebAPIs with Auth0]]></title><description><![CDATA[Pre-release warning This is written while I’m working with ASP.net 5 beta 3. Things may change. Stuff you should have already done Setup an…]]></description><link>http://ehaskins.com/2015-03-12 Securing ASP.net 5 WebAPIs with Auth0/</link><guid isPermaLink="false">http://ehaskins.com/2015-03-12 Securing ASP.net 5 WebAPIs with Auth0/</guid><pubDate>Thu, 12 Mar 2015 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Pre-release warning&lt;/h1&gt;
+&lt;p&gt;This is written while I’m working with ASP.net 5 beta 3. Things may change.&lt;/p&gt;
+&lt;h1&gt;Stuff you should have already done&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;Setup an Auth0 dev account. It’s really easy. Go do it.&lt;/li&gt;
+&lt;li&gt;Followed the instructions Auth0’s QuickStart to setup your client app, or downloaded their started app.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;Setting up ASP.net 5&lt;/h1&gt;
+&lt;p&gt;My first issue was that I was looking for a Jwt or OpenIdConnect middleware like the Auth0 quickstart says for old OWIN apps. Looks like that’s been merged into the plain old Microsoft.AspNet.Security.OAuthBearer NuGet package.&lt;/p&gt;
+&lt;h2&gt;Step 1 - Add Nuget package&lt;/h2&gt;
+&lt;p&gt;In project.json the add Nuget package to your dependencies:&lt;/p&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;&amp;quot;dependencies&amp;quot;: {
+	...
+    &amp;quot;Microsoft.AspNet.Security.OAuthBearer&amp;quot;: &amp;quot;1.0.0-beta3&amp;quot;
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Step 2 - Set it up in setup.cs&lt;/h2&gt;
+&lt;div class=&quot;gatsby-highlight&quot; data-language=&quot;text&quot;&gt;&lt;pre class=&quot;language-text&quot;&gt;&lt;code class=&quot;language-text&quot;&gt;public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerfactory)
+{
+    app.UseOAuthBearerAuthentication(o =&amp;gt;
+    {
+        o.Authority = &amp;quot;YOUR AUTH0 DOMAIN.auth0.com&amp;quot;;
+        o.Audience = &amp;quot;YOUR CLIENT ID GOES HERE&amp;quot;;
+    });
+
+	//everything else from the template
+
+}&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Step 3 - Change the JWT signing algorithm&lt;/h2&gt;
+&lt;p&gt;FYI, This step may not be needed once everything is RTM, but it’s also the one that hung me up for a while.&lt;/p&gt;
+&lt;p&gt;Go to your Auth0 admin UI. Open the settings tab for the app you’ve created, and set the JsonWebToken Token Signature Algorithm to RS256.&lt;/p&gt;
+&lt;p&gt;&lt;span
+      class=&quot;gatsby-resp-image-wrapper&quot;
+      style=&quot;position: relative; display: block; margin-left: auto; margin-right: auto;  max-width: 590px;&quot;
+    &gt;
+      &lt;a
+    class=&quot;gatsby-resp-image-link&quot;
+    href=&quot;/static/4dd282ef4e333ea59969190a361d219a/a0331/auth0-jwt-algorithm.jpg&quot;
+    style=&quot;display: block&quot;
+    target=&quot;_blank&quot;
+    rel=&quot;noopener&quot;
+  &gt;
+    &lt;span
+    class=&quot;gatsby-resp-image-background-image&quot;
+    style=&quot;padding-bottom: 57.35849056603774%; position: relative; bottom: 0; left: 0; background-image: url(&apos;data:image/jpeg;base64,/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wgARCAALABQDASIAAhEBAxEB/8QAFwAAAwEAAAAAAAAAAAAAAAAAAAECBf/EABUBAQEAAAAAAAAAAAAAAAAAAAAB/9oADAMBAAIQAxAAAAHdqKhiK//EABUQAQEAAAAAAAAAAAAAAAAAABBB/9oACAEBAAEFAmn/xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAEDAQE/AT//xAAUEQEAAAAAAAAAAAAAAAAAAAAQ/9oACAECAQE/AT//xAAUEAEAAAAAAAAAAAAAAAAAAAAg/9oACAEBAAY/Al//xAAZEAADAAMAAAAAAAAAAAAAAAAAAREQIYH/2gAIAQEAAT8h4Uontn//2gAMAwEAAgADAAAAEIjP/8QAFBEBAAAAAAAAAAAAAAAAAAAAEP/aAAgBAwEBPxA//8QAFhEBAQEAAAAAAAAAAAAAAAAAERAh/9oACAECAQE/EHSf/8QAGhABAQACAwAAAAAAAAAAAAAAAREAECExYf/aAAgBAQABPxARWI9diQvWC151/9k=&apos;); background-size: cover; display: block;&quot;
+  &gt;&lt;/span&gt;
+  &lt;img
+        class=&quot;gatsby-resp-image-image&quot;
+        alt=&quot;auth0 jwt algorithm&quot;
+        title=&quot;auth0 jwt algorithm&quot;
+        src=&quot;/static/4dd282ef4e333ea59969190a361d219a/c739e/auth0-jwt-algorithm.jpg&quot;
+        srcset=&quot;/static/4dd282ef4e333ea59969190a361d219a/8ee9c/auth0-jwt-algorithm.jpg 148w,
+/static/4dd282ef4e333ea59969190a361d219a/ebbe7/auth0-jwt-algorithm.jpg 295w,
+/static/4dd282ef4e333ea59969190a361d219a/c739e/auth0-jwt-algorithm.jpg 590w,
+/static/4dd282ef4e333ea59969190a361d219a/a0331/auth0-jwt-algorithm.jpg 795w&quot;
+        sizes=&quot;(max-width: 590px) 100vw, 590px&quot;
+      /&gt;
+  &lt;/a&gt;
+    &lt;/span&gt;&lt;/p&gt;</content:encoded></item><item><title><![CDATA[ListenCat - The Minimally Viable Product]]></title><description><![CDATA[What’s unique about ListenCat? The main differentiator between ListenCat and existing podcast clients is the experience when using multiple…]]></description><link>http://ehaskins.com/2015-03-06 ListenCat - The Minimally Viable Product/</link><guid isPermaLink="false">http://ehaskins.com/2015-03-06 ListenCat - The Minimally Viable Product/</guid><pubDate>Fri, 06 Mar 2015 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;What’s unique about ListenCat?&lt;/h1&gt;
+&lt;p&gt;The main differentiator between ListenCat and existing podcast clients is the experience when using multiple devices. That experience is dependent on a service which can store information between devices, and intelligently manage the content available on all of the user’s devices.&lt;/p&gt;
+&lt;h1&gt;What does ListenCat need to do?&lt;/h1&gt;
+&lt;p&gt;There are several core things a ListenCat user will need to be able to do.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Subscribe to feeds&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;View episodes from&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;All feeds&lt;/li&gt;
+&lt;li&gt;A subset of feeds&lt;/li&gt;
+&lt;li&gt;A single feed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Queue episodes for future listening&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Manage queue&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Reorder episodes&lt;/li&gt;
+&lt;li&gt;Remove episodes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Select &amp;#x26; play episodes individually, or from the queue&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Resume episodes where last left off&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Position should be syncronized between all devices&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;All of these capabilities will need to be available on all of a user’s devices. Eventually ListenCat will need to be available on a variety of devices and platforms. I currently want to support (roughly in order of importance).&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Modern Browsers&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Windows Universal App&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Windows Phone&lt;/li&gt;
+&lt;li&gt;Windows 8/10&lt;/li&gt;
+&lt;li&gt;XBox One - obviously not until Windows 10 Universal apps will run here&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Android&lt;/li&gt;
+&lt;li&gt;IOS&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;What’s MUST be done for the minimally viable product?&lt;/h1&gt;
+&lt;p&gt;I obviously can’t implement all of these clients at once, and before any can be written the back-end services need to be functional.&lt;/p&gt;
+&lt;p&gt;The first version of ListenCat:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Backend&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Download, parse and cache feeds&lt;/li&gt;
+&lt;li&gt;Download and cache episode files&lt;/li&gt;
+&lt;li&gt;Store played to position&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Frontend&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;View subscribed feeds&lt;/li&gt;
+&lt;li&gt;View episodes in a feed&lt;/li&gt;
+&lt;li&gt;Play an episode from a feed&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h1&gt;The next post&lt;/h1&gt;
+&lt;p&gt;The next post will be looking at the technology and platform decisions I’ve made so far.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[ListenCat - Technology]]></title><description><![CDATA[Let’s review the goals for ListenCat laid out in my last post. Great at one thing ListenCat is for one thing only. Managing and listening to…]]></description><link>http://ehaskins.com/2015-03-04 ListenCat - Technology/</link><guid isPermaLink="false">http://ehaskins.com/2015-03-04 ListenCat - Technology/</guid><pubDate>Thu, 05 Mar 2015 04:01:00 GMT</pubDate><content:encoded>&lt;p&gt;Let’s review the goals for ListenCat laid out in my last post.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Great at one thing&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ListenCat is for one thing only. Managing and listening to audio podcasts.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cloudy&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;All episodes should be cached in the cloud lands, including played/unplayed and current position in the episode.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Seamless&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Whatever device I hit play on should resume where I left off on my other device.&lt;/li&gt;
+&lt;li&gt;I should never have to select the next thing to play. Something should always be queued.&lt;/li&gt;
+&lt;li&gt;The next few episodes in my queue should be available instantly and without streaming on every device I use.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;h1&gt;What’s next&lt;/h1&gt;</content:encoded></item><item><title><![CDATA[ListenCat - Goals]]></title><description><![CDATA[Today I’m going to look at some of the technical and architecture decisions I’ve made about ListenCat. Let’s take a look at the list of…]]></description><link>http://ehaskins.com/2015-03-04 ListenCat - Goals/</link><guid isPermaLink="false">http://ehaskins.com/2015-03-04 ListenCat - Goals/</guid><pubDate>Thu, 05 Mar 2015 03:17:00 GMT</pubDate><content:encoded>&lt;p&gt;Today I’m going to look at some of the technical and architecture decisions I’ve made about ListenCat.&lt;/p&gt;
+&lt;p&gt;Let’s take a look at the list of issues I have with existing podcast apps (specifically the Microsoft Podcast app on Windows Phone)&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;It’s buggy.&lt;/li&gt;
+&lt;li&gt;Slow&lt;/li&gt;
+&lt;li&gt;Can’t search feeds&lt;/li&gt;
+&lt;li&gt;All data is local to phone&lt;/li&gt;
+&lt;li&gt;It gets confused by podcasts that only leave a handful of episodes in the RSS feed&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I figure it’s better to work off of goals instead of saying don’t have problem X, so here’s the list of goals derived loosely from those issues.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;Great at one thing&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ListenCat is for one thing only. Managing and listening to audio podcasts.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Cloudy&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;All episodes should be cached in the cloud lands, including played/unplayed and current position in the episode.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Seamless&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Whatever device I hit play on should resume where I left off on my other device.&lt;/li&gt;
+&lt;li&gt;I should never have to select the next thing to play. Something should always be queued.&lt;/li&gt;
+&lt;li&gt;The next few episodes in my queue should be available instantly and without streaming on every device I use.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;What’s next&lt;/h1&gt;
+&lt;p&gt;My next post will be looking at the feature set of a minimally viable product, probably followed by one on technical decisions and architecture.&lt;/p&gt;</content:encoded></item><item><title><![CDATA[ListenCat - A New Project]]></title><description><![CDATA[What is ListenCat.io? TL;DR version, it’s a podcast client for Windows 8, Windows Phone 8.1 and web. I’m starting to build it. It’ll be…]]></description><link>http://ehaskins.com/2015-02-12 A New Project - ListenCat.io/</link><guid isPermaLink="false">http://ehaskins.com/2015-02-12 A New Project - ListenCat.io/</guid><pubDate>Thu, 12 Feb 2015 06:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;What is ListenCat.io?&lt;/h1&gt;
+&lt;p&gt;TL;DR version, it’s a podcast client for Windows 8, Windows Phone 8.1 and web. I’m starting to build it. It’ll be awesome.&lt;/p&gt;
+&lt;h1&gt;Do we need another podcast client?&lt;/h1&gt;
+&lt;p&gt;We probably don’t, but I can’t find anything I’m happy with.&lt;/p&gt;
+&lt;p&gt;A quick look at the Windows store, and there doesn’t appear to be a single podcast client with more than a 2 star rating. Windows Phone isn’t much better. There’s the “Podcasts” app by Microsoft, but not much else.&lt;/p&gt;
+&lt;p&gt;I’ve been using the Microsoft Podcasts app for a while and I have a few issues with it.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;It’s buggy.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Episodes don’t get marked as played reliably&lt;/li&gt;
+&lt;li&gt;It decided to stop updating Hanselminutes&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Slow&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Load time is slow since it appears to try to refresh all feeds on load&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;While it’s loading feeds the UI is pretty much useless&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;It jumps around, and shows some partially rendered stuff&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Can’t search feeds&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;My favorite podcast is .Net Rocks, which just hit 1100 episodes, but the Podcasts app doesn’t have any kind of search&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;This probably doesn’t help the load times, but that’s another issue&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;All data is local to phone&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;I want to be able to start listening to a podcast on my PC at work, and when I get in the car it should resume where I left off&lt;/li&gt;
+&lt;li&gt;Similarly marked as played should be synced between devices&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;It gets confused by podcasts that only leave a handful of episodes in the RSS feed&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;A good app would be able to cache and remember old entries, ideally while having logic to detect and handle updated entries gracefully&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h1&gt;What’s been done?&lt;/h1&gt;
+&lt;p&gt;Well, the domain has been purchased. Beyond that, not much. I’ve written this post, and thought about the feature set and issues I’d like to resolve.&lt;/p&gt;
+&lt;h1&gt;What’s the plan?&lt;/h1&gt;
+&lt;p&gt;I’ll be writing one post per week here while I’m working on ListenCat. The next couple posts I’ve been thinking about are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;What’s required for a minimally viable product&lt;/li&gt;
+&lt;li&gt;Technical decisions/architecture overview&lt;/li&gt;
+&lt;/ul&gt;</content:encoded></item></channel></rss>

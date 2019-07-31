@@ -1,0 +1,162 @@
+body,
+html {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+
+  background: #7b5951;
+
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.container {
+  flex: 0 1 960px;
+  max-width: 960px;
+  overflow-x: hidden;
+  display: flex;
+  flex-flow: column nowrap;
+  min-height: 100vh;
+}
+
+header {
+  flex: 0 1 auto;
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: baseline;
+
+  border-radius: 0 0 8px 8px;
+  background: #fafafa;
+}
+
+header .site-title {
+  margin: 16px;
+  white-space: nowrap;
+}
+
+header nav {
+  flex: 0 0 auto;
+}
+
+header nav ul {
+  display: flex;
+  flex-flow: row nowrap;
+
+  list-style: none;
+  margin: 0 8px;
+  padding: 0;
+}
+
+header nav ul li {
+  flex: 0 0 auto;
+
+  margin: 0 8px 8px 8px;
+}
+
+.container > footer {
+  flex: 0 0 auto;
+  padding: 8px;
+  color: #ffffff;
+}
+
+article {
+  flex: 1 0 auto;
+
+  padding: 16px;
+
+  background: #fafafa;
+
+  margin-top: 4px;
+  border-radius: 0 8px 8px 8px;
+}
+
+article > header {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: stretch;
+}
+
+article > header > .title {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: baseline;
+
+  border-bottom: 1px solid #a8a8a8;
+}
+
+article > header > .title > h1 {
+  margin-right: 16px;
+  margin-bottom: 8px;
+}
+
+article > main {
+}
+
+.series-warning,
+#seriesinfo {
+  margin: 8px 0;
+  padding: 8px;
+
+  border: 1px solid black;
+  border-radius: 0 4px 4px 4px;
+  background: #dadada;
+}
+
+#seriesinfo > h1 {
+  margin: 0px;
+  font-size: 1.2em;
+}
+
+#seriesinfo li.upcomming {
+  color: #666666;
+}
+
+article main > h1 {
+  border-bottom: 1px solid #a8a8a8;
+}
+
+code {
+}
+
+pre code {
+  display: block;
+  border: 1px solid black;
+  border-radius: 0 4px 4px 4px;
+
+  overflow: auto;
+  padding: 8px;
+
+  background: #f1f1f1;
+}
+
+blockquote,
+aside {
+  border: 1px solid black;
+  border-radius: 0 4px 4px 4px;
+
+  overflow: auto;
+  padding: 8px;
+  margin: 0 0 0 32px;
+
+  background: #f1f1f1;
+}
+
+table {
+  text-align: left;
+
+  border-collapse: collapse;
+  /* width: 100%; */
+}
+
+td,
+th {
+  margin: 0;
+  padding: 8px;
+  border-bottom: 1px solid #c5c5c5;
+}
