@@ -16,6 +16,8 @@ body {
 
 .container {
   flex: 0 1 960px;
+  max-width: 960px;
+  overflow-x: hidden;
   display: flex;
   flex-flow: column nowrap;
   min-height: 100vh;
@@ -55,6 +57,13 @@ header nav ul li {
   flex: 0 0 auto;
 
   margin: 0 8px 8px 8px;
+}
+
+footer {
+  flex: 0 0 auto;
+  padding: 8px;
+  background: #272727;
+  color: #ffffff;
 }
 
 main {
@@ -98,9 +107,42 @@ main {
 #seriesinfo li.upcomming {
   color: #666666;
 }
-footer {
-  flex: 0 0 auto;
+
+code {
+}
+
+pre {
+  border: 1px solid black;
+  border-radius: 0 4px 4px 4px;
+
+  overflow: auto;
   padding: 8px;
-  background: #272727;
-  color: #ffffff;
+
+  background: #eee8f1;
+}
+
+blockquote,
+aside {
+  border: 1px solid black;
+  border-radius: 0 4px 4px 4px;
+
+  overflow: auto;
+  padding: 8px;
+  margin: 0 0 0 32px;
+
+  background: #eee8f1;
+}
+
+table {
+  text-align: left;
+
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td,
+th {
+  margin: 0;
+  padding: 8px;
+  border-bottom: 1px solid #c5c5c5;
 }
