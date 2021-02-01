@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Eric Haskins - Example Post</title>
+    <link rel="stylesheet" href="./site.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Eric Haskins</h1>
+      <nav>
+        <ul>
+          <li>Blog</li>
+          <li>Resources</li>
+          <li>Recipes</li>
+          <li>Contact</li>
+        </ul>
+      </nav>
+    </header>
+
+
+
+    <article>
+      <header>
+        <h1>WTF is the DAA instruction?</h1>
+        <time>January 18th, 2018</time>
+        <span class="author">Eric Haskins</span>
+      </header>
+
+      <aside class="block-article-series">
+        This article is part of a series on things
+        <ol>
+          <li>This was first</li>
+          <li>Part 2 of things</li>
+          <li>Part 3</li>
+          <li class="this-article">WTF is the DAA instruction?</li>
+          <li>Something newer</li>
+        </ol>
+      </aside>
+
+      <h1>Background</h1>
+      <p>
+        I’ve been writing a Gameboy emulator. One of the last CPU instructions I
+        have left to implement is <code class="language-text">DAA</code>. I
+        couldn’t find a good explaination of what DAA is, let alone why it’s
+        behavior is what it is.
+      </p>
+      <p>
+        I’m writing this post as I try to understand how DAA works and why it
+        exists.
+      </p>
+      <h1>Binary Coded Decimal</h1>
+      <p>
+        Numbers are normally represented in binary, but sometimes (for reasons
+        I’m not sure about) we encode each decimal digit into binary seperately.
+        We call this seperate encoding of each digit “binary coded decimal”.
+      </p>
+      <p>
+        The table below has a few examples. All of the binary and the first 4
+        BCD values are each 8 bits (1 byte).
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Decimal</th>
+            <th>Binary</th>
+            <th>BCD</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>0000 0001</td>
+            <td>0000 (0) 0001 (1)</td>
+          </tr>
+          <tr>
+            <td>10</td>
+            <td>0000 1010</td>
+            <td>0001 (1) 0000 (0)</td>
+          </tr>
+          <tr>
+            <td>32</td>
+            <td>0010 0000</td>
+            <td>0011 (3) 0010 (2)</td>
+          </tr>
+          <tr>
+            <td>99</td>
+            <td>0110 0011</td>
+            <td>1001 (9) 1001 (9)</td>
+          </tr>
+          <tr>
+            <td>100</td>
+            <td>0110 0100</td>
+            <td>0001 (1) 0000 (0) 0000 (0)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        So, BCD is pretty ineffecient. Wastes 6 of the 16 possible values each 4
+        bits can hold. I’m not sure why it’s particularly useful. But,
+        apearantly somebody does.
+      </p>
+      <h1>BCD Math</h1>
+      <p>
+        What happens if we add(or subtract) two BCD values using CPU instuctions
+        designed to be used with regular binary values?
+      </p>
+      <h2>Addition</h2>
+      <p>Let’s look at a simple case.</p>
+      <div class="gatsby-highlight" data-language="text">
+        <pre class="language-text"><code class="language-text">1 + 1
+
+(1) 0001
+(1) 0001 +
+------
+(2) 0010</code></pre>
+      </div>
+      <p>So that worked, let try something a little harder.</p>
+      <div class="gatsby-highlight" data-language="text">
+        <pre class="language-text"><code class="language-text">5 + 5
+
+(5)  0101
+(5)  0101 +
+-----------
+(10) 1010</code></pre>
+      </div>
+      <p>
+        That looks ok, but we’re working in BCD, so the output should be in BCD
+        as well.
+      </p>
+      <p>
+        Since 10 is too big to fit in a decimal digit, we need to fix it. It
+        turns out if we add 6 to the result, it produces a valid BCD value.
+      </p>
+      <div class="gatsby-highlight" data-language="text">
+        <pre class="language-text"><code class="language-text">(10) 1010
+(6)  0110 +
+-----------
+(16) 0001 (1) 0000 (0)</code></pre>
+      </div>
+      <p>If the sum in greater, than 9, add 6.</p>
+      <p>
+        It turns out this works for any single decimal digit addition, even when
+        it overflows into a 5th bit.
+      </p>
+      <div class="gatsby-highlight" data-language="text">
+        <pre class="language-text"><code class="language-text">(7)       0111
+(9)       1001 +
+----------
+(16) 0001 0000
+
+16 &gt; 9, so
+
+(16) 0001     0000
+(6)  0000     0110 +
+----------------
+     0001 (1) 0110 (6)</code></pre>
+      </div>
+      <h2>Two Digit Addition</h2>
+      <p>Turns out this even works for two digit addition.</p>
+      <div class="gatsby-highlight" data-language="text">
+        <pre class="language-text"><code class="language-text">
+19 + 28 = 47
+
+       11 (carries)
+(19) 0001 (1) 1001 (9)
+(28) 0010 (2) 1000 (8) +
+------------------------
+     0100 (4)   0001 (1)
+</code></pre>
+      </div>
+      <p>
+        Looking at the first 4 bits, they’re only 1 which according to our rule
+        wouldn’t need to be corrected, but we need to look at the carry from the
+        4th to the 5th bit.
+      </p>
+      <p>
+        Since there was a carry from the 4th to 5th bit, it the first 4 bit
+        addition really producted <code class="language-text">0001 0001</code>.
+        which is greater than <code class="language-text">9</code>.
+      </p>
+      <div class="gatsby-highlight" data-language="text">
+        <pre class="language-text"><code class="language-text">
+0100 (4)   0001 (1)
+0000 (0)   0110 (6) +
+---------------------
+0100 (4)   0111 (7)</code></pre>
+      </div>
+      <h2>Subtraction</h2>
+      <p>
+        So addition, even with multiple deciaml digits works with the same rule.
+      </p>
+      <p>
+        What about subtraction? Well, computers don’t really do subtraction like
+        humans do. They do subtraction by adding the “two’s complement” of the
+        value being subtracted to the value it’s being subtracted from.
+      </p>
+      <p>
+        To compute a “two’s complement”, you invert all the bits, then add 1.
+        Odd, I know, but it works.
+      </p>
+      <div class="gatsby-highlight" data-language="text">
+        <pre class="language-text"><code class="language-text">
+47-28=19
+
+Complement of 28
+(28) 0010 (2) 1000 (8)
+     1101     0111 (invert bits)
+                 1 + (add 1)
+    ----------------
+     1101     1000</code></pre>
+      </div>
+      <p>So now we subtract by adding.</p>
+      <div class="gatsby-highlight" data-language="text">
+        <pre class="language-text"><code class="language-text">
+47-28=19
+
+   1 1
+(48) 0100 (4) 0111 (7)
+     1101     1000
+------------------------
+     0001 (1) 1111 (15)</code></pre>
+      </div>
+      <p>
+        Our first 4 bits are <code class="language-text">1111 (15)</code>, we
+        know our answer should be <code class="language-text">9</code>. When
+        adding we add 6 to any digit greater than 9. When subtracting, we
+        subtract 6 from any digit greater than 9.
+      </p>
+      <div class="gatsby-highlight" data-language="text">
+        <pre class="language-text"><code class="language-text">
+Complement 06
+0000 0110
+1111 1001
+Add 1
+1111 1010
+
+1
+  0001 (1) 1111 (15)
+  1111     1010 +
+---------------------
+  0001 (1) 1001 (9)</code></pre>
+      </div>
+      <p>There’s carry out of the 8th bit, but we’ll ignore that.</p>
+      <h1>Isn’t This Post About DAA?</h1>
+      <p>
+        Now that we know what BCD is, how to correct when it’s added or
+        subtracted in a binary added, we can figure out the logic for DAA.
+      </p>
+      <p>
+        DAA is intended to be run immediately after an addition or subtraction
+        operation, where the operands were BCD encoded. It then makes the
+        corrections described above, so the result (stored in the A register) is
+        the BCD encoded result of the previous operation.
+      </p>
+      <p>
+        However, DAA doesn’t know what the original values were, and has minimal
+        information about the calculation.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Value to be corrected</td>
+            <td>Stored in register A</td>
+          </tr>
+          <tr>
+            <td>Half carry (H) flag</td>
+            <td>1 if there was a carry from bit 4 to 5</td>
+          </tr>
+          <tr>
+            <td>Carry (C) flag</td>
+            <td>1 if there was a carry from bit 8</td>
+          </tr>
+          <tr>
+            <td>Subtraction (N)</td>
+            <td>1 if the previous operation was a subtraction</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>We can distill our rules into</p>
+      <ul>
+        <li>
+          <p>If adding</p>
+          <ul>
+            <li>Add 6 to each digit greater than 9, or if it carried</li>
+          </ul>
+        </li>
+        <li>
+          <p>If subtracting</p>
+          <ul>
+            <li>Subtract 6 from each digit greater than 9, or if it carried</li>
+          </ul>
+        </li>
+      </ul>
+      <p>
+        On a Z80, at least, the DAA instruction sets a couple of flags based on
+        the final value. The logic for these is at the end of the function.
+      </p>
+      <table>
+        <thead>
+          <tr>
+            <th>Flag</th>
+            <th>Condition</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Carry (C)</td>
+            <td>Output &gt; 0x99</td>
+          </tr>
+          <tr>
+            <td>Zero (Z)</td>
+            <td>Output == 0</td>
+          </tr>
+        </tbody>
+      </table>
+      <h1>Some Code…</h1>
+      <p>
+        Turns out there’s a lot of poorly documented edge cases in
+        <code class="language-text">daa</code>. This is the code I ended up
+        with, which works.
+      </p>
+      <pre>
+function DAA(value: number, subtraction: bool, carry: bool, halfCarry: bool){
+    let correction = 0;
+    
+    let setFlagC = 0;
+    if (flagH || (!flagN && (value & 0xf) > 9)) {
+        correction |= 0x6;
+    }
+    
+    if (flagC || (!flagN && value > 0x99)) {
+        correction |= 0x60;
+        setFlagC = FLAG_C;
+    }
+    
+    value += flagN ? -correction : correction;
+    
+    value &= 0xff;
+    
+    const setFlagZ = value === 0 ? FLAG_Z : 0;
+    
+    regF &= ~(FLAG_H | FLAG_Z | FLAG_C);
+    regF |= setFlagC | setFlagZ;
+    
+    return { output, carry, zero };
+}
+      </pre>
+      <p>
+        So that’s the DAA instruction, though I’m still not sure why you’d want
+        to use BCD.
+      </p>
+    </article>
+  </body>
+</html>
